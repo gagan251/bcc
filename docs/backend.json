@@ -194,6 +194,42 @@
         "score",
         "submissionDate"
       ]
+    },
+    "Review": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Review",
+      "type": "object",
+      "description": "Represents a user-submitted review or testimonial.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the review."
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the person who submitted the review."
+        },
+        "rating": {
+          "type": "number",
+          "description": "Rating given by the user, from 1 to 5."
+        },
+        "feedback": {
+          "type": "string",
+          "description": "The feedback text."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp when the review was submitted."
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "rating",
+        "feedback",
+        "createdAt"
+      ]
     }
   },
   "auth": {
@@ -314,9 +350,24 @@
             }
           ]
         }
+      },
+      {
+        "path": "/reviews/{reviewId}",
+        "definition": {
+          "entityName": "Review",
+          "schema": {
+            "$ref": "#/backend/entities/Review"
+          },
+          "description": "Stores user submitted reviews and testimonials.",
+          "params": [
+            {
+              "name": "reviewId",
+              "description": "Unique identifier for the review."
+            }
+          ]
+        }
       }
     ],
-    "reasoning": "The Firestore data structure is designed to support the Bharat Learning Hub platform, focusing on user authentication, course management, and student progress tracking. The structure prioritizes authorization independence and adheres to best practices for security and scalability.\n\n*   **User Data:** User profiles are stored in `/users/{userId}`. This path-based ownership model provides excellent security and simplifies rules. Each user document contains essential information (email, displayName, role).\n*   **Course Data:** Courses are stored in the `/courses/{courseId}` collection. This flat collection structure is suitable for managing course information. \n*   **Enrollment Data:** Enrollments are managed under `/users/{userId}/enrollments/{enrollmentId}`. This hierarchical structure enables efficient querying of a user's enrollments.\n*   **Lesson Data:** Lessons, which are subcollections of Courses, are stored in `/courses/{courseId}/lessons/{lessonId}`. This structure is easy to query lessons of the course.\n*   **Test Data:** Tests, which are subcollections of Courses, are stored in `/courses/{courseId}/tests/{testId}`. This structure is easy to query tests of the course.\n*   **Test Result Data:** Test Results, which are subcollections of Users, are stored in `/users/{userId}/testResults/{testResultId}`. This structure makes querying test results for a given user simple.\n\n**Authorization Independence:**\n\n*   No `get()` calls are necessary in security rules because the structure uses path-based ownership (e.g., `/users/{userId}`) and subcollections to associate data with users.\n\n**QAPs Support:**\n\n*   The path-based ownership for user-specific data enables secure `list` operations. Rules can easily restrict access to a user's own data without filtering based on document content. The segregation of courses and lessons ensures that only authorized users can access course content."
+    "reasoning": "The Firestore data structure is designed to support the Bharat Learning Hub platform, focusing on user authentication, course management, and student progress tracking. The structure prioritizes authorization independence and adheres to best practices for security and scalability.\n\n*   **User Data:** User profiles are stored in `/users/{userId}`. This path-based ownership model provides excellent security and simplifies rules. Each user document contains essential information (email, displayName, role).\n*   **Course Data:** Courses are stored in the `/courses/{courseId}` collection. This flat collection structure is suitable for managing course information. \n*   **Enrollment Data:** Enrollments are managed under `/users/{userId}/enrollments/{enrollmentId}`. This hierarchical structure enables efficient querying of a user's enrollments.\n*   **Lesson Data:** Lessons, which are subcollections of Courses, are stored in `/courses/{courseId}/lessons/{lessonId}`. This structure is easy to query lessons of the course.\n*   **Test Data:** Tests, which are subcollections of Courses, are stored in `/courses/{courseId}/tests/{testId}`. This structure is easy to query tests of the course.\n*   **Test Result Data:** Test Results, which are subcollections of Users, are stored in `/users/{userId}/testResults/{testResultId}`. This structure makes querying test results for a given user simple.\n*   **Review Data:** User-submitted reviews are stored in the top-level `/reviews` collection. This allows anonymous or authenticated users to submit feedback without needing complex user-specific permissions. Access to read these reviews should be limited to admin roles.\n\n**Authorization Independence:**\n\n*   No `get()` calls are necessary in security rules because the structure uses path-based ownership (e.g., `/users/{userId}`) and subcollections to associate data with users.\n\n**QAPs Support:**\n\n*   The path-based ownership for user-specific data enables secure `list` operations. Rules can easily restrict access to a user's own data without filtering based on document content. The segregation of courses and lessons ensures that only authorized users can access course content."
   }
 }
-    

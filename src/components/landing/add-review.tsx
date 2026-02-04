@@ -19,6 +19,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Loader2, Send, Star } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
+import { useFirestore } from '@/firebase';
+import { collection, serverTimestamp } from 'firebase/firestore';
+import { addDocumentNonBlocking } from '@/firebase/non-blocking-updates';
 
 const formSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters.'),
@@ -29,6 +32,7 @@ const formSchema = z.object({
 export function AddReview() {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+  const firestore = useFirestore();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -41,16 +45,29 @@ export function AddReview() {
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
-    console.log(values);
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false);
+
+    if (!firestore) {
       toast({
-        title: 'Testimonial Submitted!',
-        description: 'Thank you for your feedback.',
+        variant: 'destructive',
+        title: 'Database Error',
+        description: 'Could not connect to the database. Please try again later.',
       });
-      form.reset();
-    }, 1500);
+      setIsLoading(false);
+      return;
+    }
+
+    const reviewsCollection = collection(firestore, 'reviews');
+    addDocumentNonBlocking(reviewsCollection, {
+      ...values,
+      createdAt: serverTimestamp(),
+    });
+
+    setIsLoading(false);
+    toast({
+      title: 'Testimonial Submitted!',
+      description: 'Thank you for your feedback.',
+    });
+    form.reset();
   }
 
   return (
@@ -77,7 +94,7 @@ export function AddReview() {
                   <FormItem>
                     <FormLabel>Your Name</FormLabel>
                     <FormControl>
-                      <Input placeholder="John Doe" {...field} />
+                      <Input placeholder="John Doe" {...field} disabled={isLoading} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -91,7 +108,7 @@ export function AddReview() {
                   <FormItem>
                     <FormLabel>Rating</FormLabel>
                     <FormControl>
-                        <StarRating rating={field.value} onRatingChange={field.onChange} />
+                        <StarRating rating={field.value} onRatingChange={field.onChange} disabled={isLoading} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -109,6 +126,7 @@ export function AddReview() {
                         placeholder="Tell us what you think about our courses..."
                         className="min-h-[120px]"
                         {...field}
+                        disabled={isLoading}
                       />
                     </FormControl>
                     <FormMessage />
@@ -132,21 +150,22 @@ export function AddReview() {
   );
 }
 
-function StarRating({ rating, onRatingChange }: { rating: number, onRatingChange: (rating: number) => void }) {
+function StarRating({ rating, onRatingChange, disabled }: { rating: number, onRatingChange: (rating: number) => void, disabled?: boolean }) {
     const [hoverRating, setHoverRating] = useState(0);
 
     return (
-        <div className="flex items-center space-x-1">
+        <div className={cn("flex items-center space-x-1", disabled && "cursor-not-allowed opacity-50")}>
             {[1, 2, 3, 4, 5].map((star) => (
                 <Star
                     key={star}
                     className={cn(
-                        'h-6 w-6 cursor-pointer transition-colors',
+                        'h-6 w-6 transition-colors',
+                        !disabled && 'cursor-pointer',
                         (hoverRating || rating) >= star ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'
                     )}
-                    onClick={() => onRatingChange(star)}
-                    onMouseEnter={() => setHoverRating(star)}
-                    onMouseLeave={() => setHoverRating(0)}
+                    onClick={() => !disabled && onRatingChange(star)}
+                    onMouseEnter={() => !disabled && setHoverRating(star)}
+                    onMouseLeave={() => !disabled && setHoverRating(0)}
                 />
             ))}
         </div>
