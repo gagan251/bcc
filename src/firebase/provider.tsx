@@ -5,6 +5,7 @@ import { FirebaseApp } from 'firebase/app';
 import { Firestore } from 'firebase/firestore';
 import { Auth, User, onAuthStateChanged } from 'firebase/auth';
 import { FirebaseErrorListener } from '@/components/FirebaseErrorListener'
+import { errorEmitter } from './error-emitter';
 
 interface FirebaseProviderProps {
   children: ReactNode;
@@ -86,7 +87,23 @@ export const FirebaseProvider: React.FC<FirebaseProviderProps> = ({
         setUserAuthState({ user: null, isUserLoading: false, userError: error });
       }
     );
-    return () => unsubscribe(); // Cleanup
+
+    const handleProfileUpdate = () => {
+        setUserAuthState(currentState => {
+            // Re-fetch from auth.currentUser which is updated after `updateProfile`
+            // and create a new state object to trigger a re-render.
+            if (currentState.user && auth.currentUser) {
+                return { ...currentState, user: auth.currentUser };
+            }
+            return currentState;
+        });
+    };
+    errorEmitter.on('profile-updated', handleProfileUpdate);
+
+    return () => {
+        unsubscribe();
+        errorEmitter.off('profile-updated', handleProfileUpdate);
+    };
   }, [auth]); // Depends on the auth instance
 
   // Memoize the context value

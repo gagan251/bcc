@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { useTheme } from 'next-themes';
-import { useUser } from '@/firebase';
+import { useUser, errorEmitter } from '@/firebase';
 import { getAuth, updateProfile, sendPasswordResetEmail, deleteUser } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
 
@@ -45,6 +45,7 @@ export default function SettingsPage() {
     setIsSavingName(true);
     try {
       await updateProfile(auth.currentUser, { displayName: values.displayName });
+      errorEmitter.emit('profile-updated');
       toast({
         title: "Profile updated",
         description: "Your display name has been successfully updated.",
