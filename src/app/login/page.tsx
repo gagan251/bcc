@@ -2,6 +2,8 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 
 const EyeIcon = ({ className }: { className?: string }) => (
   <svg
@@ -19,23 +21,40 @@ const EyeIcon = ({ className }: { className?: string }) => (
 export default function LoginPage() {
   const [passwordShown, setPasswordShown] = useState(false);
   const [message, setMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
+  const auth = getAuth();
 
   const togglePasswordVisibility = () => {
     setPasswordShown(!passwordShown);
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setIsLoading(true);
+    setMessage('');
+
     const formData = new FormData(e.currentTarget);
     const email = formData.get('email') as string;
+    const password = formData.get('password') as string;
 
-    setMessage(
-      email ? `Logging in as ${email}...` : 'Logging in...'
-    );
-
-    setTimeout(() => {
-      setMessage('✅ Login UI ready. Connect Firebase Authentication next.');
-    }, 900);
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      router.push('/dashboard');
+    } catch (error: any) {
+      console.error(error);
+      if (
+        error.code === 'auth/wrong-password' ||
+        error.code === 'auth/user-not-found' ||
+        error.code === 'auth/invalid-credential'
+      ) {
+        setMessage('Invalid email or password.');
+      } else {
+        setMessage('An error occurred during login. Please try again.');
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -67,7 +86,8 @@ export default function LoginPage() {
                 placeholder="Email"
                 required
                 autoComplete="email"
-                className="h-[54px] w-full rounded-[10px] border border-[rgba(120,140,170,.35)] bg-[rgba(255,255,255,.65)] px-4 text-base text-[#1c2430] shadow-[inset_0_1px_0_rgba(255,255,255,.7)] outline-none placeholder:text-[rgba(28,36,48,.45)] focus:border-[rgba(31,120,209,.55)] focus:shadow-[0_0_0_4px_rgba(31,120,209,.12),inset_0_1px_0_rgba(255,255,255,.75)]"
+                disabled={isLoading}
+                className="h-[54px] w-full rounded-[10px] border border-[rgba(120,140,170,.35)] bg-[rgba(255,255,255,.65)] px-4 text-base text-[#1c2430] shadow-[inset_0_1px_0_rgba(255,255,255,.7)] outline-none placeholder:text-[rgba(28,36,48,.45)] focus:border-[rgba(31,120,209,.55)] focus:shadow-[0_0_0_4px_rgba(31,120,209,.12),inset_0_1px_0_rgba(255,255,255,.75)] disabled:opacity-50"
               />
             </div>
 
@@ -79,7 +99,8 @@ export default function LoginPage() {
                 placeholder="Password"
                 required
                 autoComplete="current-password"
-                className="h-[54px] w-full rounded-[10px] border border-[rgba(120,140,170,.35)] bg-[rgba(255,255,255,.65)] px-4 pr-12 text-base text-[#1c2430] shadow-[inset_0_1px_0_rgba(255,255,255,.7)] outline-none placeholder:text-[rgba(28,36,48,.45)] focus:border-[rgba(31,120,209,.55)] focus:shadow-[0_0_0_4px_rgba(31,120,209,.12),inset_0_1px_0_rgba(255,255,255,.75)]"
+                disabled={isLoading}
+                className="h-[54px] w-full rounded-[10px] border border-[rgba(120,140,170,.35)] bg-[rgba(255,255,255,.65)] px-4 pr-12 text-base text-[#1c2430] shadow-[inset_0_1px_0_rgba(255,255,255,.7)] outline-none placeholder:text-[rgba(28,36,48,.45)] focus:border-[rgba(31,120,209,.55)] focus:shadow-[0_0_0_4px_rgba(31,120,209,.12),inset_0_1px_0_rgba(255,255,255,.75)] disabled:opacity-50"
               />
               <button
                 type="button"
@@ -87,6 +108,7 @@ export default function LoginPage() {
                 id="togglePassword"
                 aria-label="Show or hide password"
                 onClick={togglePasswordVisibility}
+                disabled={isLoading}
               >
                 <EyeIcon
                   className={
@@ -97,22 +119,23 @@ export default function LoginPage() {
             </div>
             
             <div className="text-right -mt-2">
-                <Link href="#" className="text-sm text-primary hover:underline">
+                <Link href="#" className={isLoading ? "pointer-events-none text-sm text-muted-foreground" : "text-sm text-primary hover:underline"}>
                     Forgot Password?
                 </Link>
             </div>
 
             <button
-              className="mt-[6px] h-[54px] cursor-pointer rounded-[10px] border-none bg-[linear-gradient(180deg,#2a8df1_0%,#1f78d1_55%,#1566b7_100%)] text-base font-semibold text-white shadow-[0_10px_18px_rgba(31,120,209,.25)] active:translate-y-px"
+              className="mt-[6px] h-[54px] cursor-pointer rounded-[10px] border-none bg-[linear-gradient(180deg,#2a8df1_0%,#1f78d1_55%,#1566b7_100%)] text-base font-semibold text-white shadow-[0_10px_18px_rgba(31,120,209,.25)] active:translate-y-px disabled:opacity-70"
               type="submit"
+              disabled={isLoading}
             >
-              Login
+              {isLoading ? 'Logging in...' : 'Login'}
             </button>
 
             <p
-              className="mt-[2px] min-h-[18px] text-center text-sm text-[rgba(28,36,48,.6)]"
+              className="mt-[2px] min-h-[18px] text-center text-sm text-red-600"
               id="msg"
-              role="status"
+              role="alert"
               aria-live="polite"
             >
               {message}
@@ -120,7 +143,7 @@ export default function LoginPage() {
 
             <div className="text-center text-sm text-muted-foreground">
                 Don't have an account?{' '}
-                <Link href="/signup" className="font-semibold text-primary hover:underline">
+                <Link href="/signup" className={isLoading ? "pointer-events-none font-semibold text-muted-foreground" : "font-semibold text-primary hover:underline"}>
                   Sign up
                 </Link>
               </div>
@@ -130,3 +153,5 @@ export default function LoginPage() {
     </div>
   );
 }
+
+    

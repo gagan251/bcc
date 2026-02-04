@@ -2,9 +2,24 @@
 
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { Bell, Menu, Type } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+} from '@/components/ui/sheet';
+import { Bell, Menu, Type, LogOut, LayoutDashboard } from 'lucide-react';
+import { useUser } from '@/firebase';
+import { signOut, getAuth } from 'firebase/auth';
+import { useRouter } from 'next/navigation';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 const navLinks = [
   { href: '#home', label: 'Home' },
@@ -15,15 +30,24 @@ const navLinks = [
 ];
 
 export function Header() {
-  const [isScrolled, setIsScrolled] = useState(false);
+  const { user, isUserLoading } = useUser();
+  const router = useRouter();
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  const handleSignOut = async () => {
+    try {
+      await signOut(getAuth());
+      router.push('/');
+    } catch (error) {
+      console.error('Error signing out: ', error);
+    }
+  };
+  
+  const getInitials = (name: string | null | undefined) => {
+    if (!name) return 'S';
+    const names = name.split(' ');
+    if (names.length === 1) return names[0].charAt(0).toUpperCase();
+    return (names[0].charAt(0) + names[names.length - 1].charAt(0)).toUpperCase();
+  };
 
   const NavLinks = ({...props}) => (
     <>
@@ -53,13 +77,49 @@ export function Header() {
           <NavLinks />
         </nav>
         <div className="flex items-center gap-2">
-          <Button variant="ghost" size="sm" asChild className="hidden md:flex">
-            <Link href="/login">Login</Link>
-          </Button>
-          <Button size="sm" asChild className="hidden md:flex">
-            <Link href="/signup">Sign Up</Link>
-          </Button>
-
+          {isUserLoading ? (
+             <div className="h-9 w-[120px] animate-pulse rounded-md bg-muted hidden md:flex"></div>
+          ) : user ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="relative h-9 w-9 rounded-full">
+                  <Avatar className="h-9 w-9">
+                    <AvatarImage src={user.photoURL || ''} alt={user.displayName || 'user'} />
+                    <AvatarFallback>{getInitials(user.displayName)}</AvatarFallback>
+                  </Avatar>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56" align="end" forceMount>
+                <DropdownMenuLabel className="font-normal">
+                  <div className="flex flex-col space-y-1">
+                    <p className="text-sm font-medium leading-none">{user.displayName}</p>
+                    <p className="text-xs leading-none text-muted-foreground">
+                      {user.email}
+                    </p>
+                  </div>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link href="/dashboard"><LayoutDashboard className="mr-2"/>Dashboard</Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleSignOut}>
+                  <LogOut className="mr-2"/>
+                  Sign Out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <>
+              <Button variant="ghost" size="sm" asChild className="hidden md:flex">
+                <Link href="/login">Login</Link>
+              </Button>
+              <Button size="sm" asChild className="hidden md:flex">
+                <Link href="/signup">Sign Up</Link>
+              </Button>
+            </>
+          )}
+          
           <Button variant="ghost" size="icon" className="h-9 w-9">
             <Bell className="h-4 w-4" />
             <span className="sr-only">Notifications</span>
@@ -81,23 +141,36 @@ export function Header() {
                   <NavLinks />
                 </nav>
                 <div className="mt-auto space-y-2">
-                    <Button asChild className='w-full'>
-                      <Link href="/signup">Sign Up</Link>
-                    </Button>
-                    <Button variant="outline" asChild className='w-full'>
-                      <Link href="/login">Login</Link>
-                    </Button>
-                    <div className="relative py-2">
-                        <div className="absolute inset-0 flex items-center">
-                            <span className="w-full border-t"></span>
-                        </div>
-                        <div className="relative flex justify-center text-xs uppercase">
-                            <span className="bg-background px-2 text-muted-foreground">Or</span>
-                        </div>
-                    </div>
-                     <Button variant="ghost" asChild className='w-full'>
-                      <Link href="/admin/login">Admin Login</Link>
-                    </Button>
+                  {user ? (
+                    <>
+                      <Button asChild className="w-full">
+                        <Link href="/dashboard">Dashboard</Link>
+                      </Button>
+                      <Button variant="outline" onClick={handleSignOut} className="w-full">
+                        Sign Out
+                      </Button>
+                    </>
+                  ) : (
+                    <>
+                      <Button asChild className='w-full'>
+                        <Link href="/signup">Sign Up</Link>
+                      </Button>
+                      <Button variant="outline" asChild className='w-full'>
+                        <Link href="/login">Login</Link>
+                      </Button>
+                    </>
+                  )}
+                   <div className="relative py-2">
+                      <div className="absolute inset-0 flex items-center">
+                          <span className="w-full border-t"></span>
+                      </div>
+                      <div className="relative flex justify-center text-xs uppercase">
+                          <span className="bg-background px-2 text-muted-foreground">Or</span>
+                      </div>
+                  </div>
+                   <Button variant="ghost" asChild className='w-full'>
+                    <Link href="/admin/login">Admin Login</Link>
+                  </Button>
                 </div>
               </div>
             </SheetContent>
@@ -107,3 +180,5 @@ export function Header() {
     </header>
   );
 }
+
+    

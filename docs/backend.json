@@ -15,9 +15,17 @@
           "description": "User's email address.",
           "format": "email"
         },
+        "firstName": {
+          "type": "string",
+          "description": "User's first name."
+        },
+        "lastName": {
+          "type": "string",
+          "description": "User's last name."
+        },
         "displayName": {
           "type": "string",
-          "description": "The name displayed to the user."
+          "description": "The full name of the user, derived from first and last name."
         },
         "role": {
           "type": "string",
@@ -27,7 +35,8 @@
       "required": [
         "id",
         "email",
-        "displayName",
+        "firstName",
+        "lastName",
         "role"
       ]
     },
@@ -189,8 +198,7 @@
   },
   "auth": {
     "providers": [
-      "password",
-      "anonymous"
+      "password"
     ]
   },
   "firestore": {
@@ -311,3 +319,4 @@
     "reasoning": "The Firestore data structure is designed to support the Bharat Learning Hub platform, focusing on user authentication, course management, and student progress tracking. The structure prioritizes authorization independence and adheres to best practices for security and scalability.\n\n*   **User Data:** User profiles are stored in `/users/{userId}`. This path-based ownership model provides excellent security and simplifies rules. Each user document contains essential information (email, displayName, role).\n*   **Course Data:** Courses are stored in the `/courses/{courseId}` collection. This flat collection structure is suitable for managing course information. \n*   **Enrollment Data:** Enrollments are managed under `/users/{userId}/enrollments/{enrollmentId}`. This hierarchical structure enables efficient querying of a user's enrollments.\n*   **Lesson Data:** Lessons, which are subcollections of Courses, are stored in `/courses/{courseId}/lessons/{lessonId}`. This structure is easy to query lessons of the course.\n*   **Test Data:** Tests, which are subcollections of Courses, are stored in `/courses/{courseId}/tests/{testId}`. This structure is easy to query tests of the course.\n*   **Test Result Data:** Test Results, which are subcollections of Users, are stored in `/users/{userId}/testResults/{testResultId}`. This structure makes querying test results for a given user simple.\n\n**Authorization Independence:**\n\n*   No `get()` calls are necessary in security rules because the structure uses path-based ownership (e.g., `/users/{userId}`) and subcollections to associate data with users.\n\n**QAPs Support:**\n\n*   The path-based ownership for user-specific data enables secure `list` operations. Rules can easily restrict access to a user's own data without filtering based on document content. The segregation of courses and lessons ensures that only authorized users can access course content."
   }
 }
+    
