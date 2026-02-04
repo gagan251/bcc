@@ -7,6 +7,12 @@
       "imageHint": "typewriter"
     },
     {
+      "id": "glass-hero-image",
+      "description": "A modern typewriter on a clean background.",
+      "imageUrl": "https://images.unsplash.com/photo-1588001405532-a4f64a43a013?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "imageHint": "typewriter clean"
+    },
+    {
       "id": "why-choose-us-student",
       "description": "A vintage typewriter on a wooden desk.",
       "imageUrl": "https://images.unsplash.com/photo-1586334413822-e3d85883a887?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",

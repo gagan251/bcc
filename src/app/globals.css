@@ -86,3 +86,48 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+.particle-glow {
+  position: relative;
+  background: radial-gradient(
+      circle at 50% 50%,
+      rgba(4, 3, 31, 1) 0%,
+      rgba(9, 9, 64, 1) 35%,
+      rgba(9, 21, 89, 1) 100%
+    );
+  overflow: hidden;
+}
+
+.particle-glow::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 150%;
+  height: 150%;
+  transform: translate(-50%, -50%);
+  background-image: radial-gradient(
+      circle,
+      rgba(255, 255, 255, 0.1) 1px,
+      transparent 1px
+    ),
+    radial-gradient(circle, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 40px 40px, 80px 80px;
+  animation: particle-animation 20s linear infinite;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .particle-glow::before {
+    animation: none;
+  }
+}
+
+@keyframes particle-animation {
+  from {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}

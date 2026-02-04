@@ -54,7 +54,7 @@ export function Header() {
         <Link
           key={link.href}
           href={link.href}
-          className="text-sm font-medium text-foreground/80 transition-colors hover:text-primary px-3 py-2 rounded-md hover:bg-accent"
+          className="text-sm font-medium text-white/80 transition-colors hover:text-white px-3 py-2 rounded-md"
           {...props}
         >
           {link.label}
@@ -65,19 +65,19 @@ export function Header() {
 
   return (
     <header
-      className={`sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60`}
+      className={`sticky top-0 z-50 w-full bg-transparent`}
     >
       <div className="container mx-auto flex h-16 max-w-screen-xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <Link href="/" className="flex items-center gap-2">
           <SiteLogo className="h-6 w-6" />
-          <span className="font-bold">Bharat Communication Center</span>
+          <span className="font-bold text-white">Bharat Communication Center</span>
         </Link>
         <nav className="hidden items-center gap-1 md:flex">
           <NavLinks />
         </nav>
         <div className="flex items-center gap-2">
           {isUserLoading ? (
-             <div className="h-9 w-[120px] animate-pulse rounded-md bg-muted hidden md:flex"></div>
+             <div className="h-9 w-[120px] animate-pulse rounded-md bg-muted/20 hidden md:flex"></div>
           ) : user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -110,27 +110,27 @@ export function Header() {
             </DropdownMenu>
           ) : (
             <>
-              <Button variant="ghost" size="sm" asChild className="hidden md:flex">
+              <Button variant="ghost" size="sm" asChild className="hidden md:flex text-white hover:bg-white/10 hover:text-white">
                 <Link href="/login">Login</Link>
               </Button>
-              <Button size="sm" asChild className="hidden md:flex">
+              <Button size="sm" asChild className="hidden md:flex bg-white/10 text-white hover:bg-white/20">
                 <Link href="/signup">Sign Up</Link>
               </Button>
             </>
           )}
           
-          <Button variant="ghost" size="icon" className="h-9 w-9">
+          <Button variant="ghost" size="icon" className="h-9 w-9 text-white hover:bg-white/10 hover:text-white">
             <Bell className="h-4 w-4" />
             <span className="sr-only">Notifications</span>
           </Button>
           <Sheet>
             <SheetTrigger asChild>
-              <Button variant="outline" size="icon" className="md:hidden h-9 w-9">
+              <Button variant="outline" size="icon" className="md:hidden h-9 w-9 bg-transparent border-white/20 text-white hover:bg-white/10 hover:text-white">
                 <Menu className="h-4 w-4" />
                 <span className="sr-only">Open menu</span>
               </Button>
             </SheetTrigger>
-            <SheetContent side="right">
+            <SheetContent side="right" className="bg-[#04031F] text-white">
               <div className="flex h-full flex-col p-6">
                 <Link href="/" className="mb-8 flex items-center gap-2">
                   <SiteLogo className="h-6 w-6" />
