@@ -5,8 +5,7 @@ import { LoginCard } from '@/components/landing/login-card';
 import { Courses } from '@/components/landing/courses';
 import { EnrollmentFlow } from '@/components/landing/enrollment-flow';
 import { WhyChooseUs } from '@/components/landing/why-choose-us';
-import { Testimonials } from '@/components/landing/testimonials';
-import { AiAssessment } from '@/components/landing/ai-assessment';
+import { AddReview } from '@/components/landing/add-review';
 
 export default function Home() {
   return (
@@ -21,8 +20,7 @@ export default function Home() {
                 <Courses />
                 <EnrollmentFlow />
                 <WhyChooseUs />
-                <Testimonials />
-                <AiAssessment />
+                <AddReview />
               </div>
             </div>
             <aside className="hidden lg:col-span-4 lg:block">
