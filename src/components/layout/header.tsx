@@ -42,11 +42,9 @@ export function Header() {
     }
   };
   
-  const getInitials = (name: string | null | undefined) => {
-    if (!name) return 'S';
-    const names = name.split(' ');
-    if (names.length === 1) return names[0].charAt(0).toUpperCase();
-    return (names[0].charAt(0) + names[names.length - 1].charAt(0)).toUpperCase();
+  const getAvatarFallback = (email: string | null | undefined) => {
+    if (!email) return 'U';
+    return email.charAt(0).toUpperCase();
   };
 
   const NavLinks = ({...props}) => (
@@ -85,7 +83,7 @@ export function Header() {
                 <Button variant="ghost" className="relative h-9 w-9 rounded-full">
                   <Avatar className="h-9 w-9">
                     <AvatarImage src={user.photoURL || ''} alt={user.displayName || 'user'} />
-                    <AvatarFallback>{getInitials(user.displayName)}</AvatarFallback>
+                    <AvatarFallback>{getAvatarFallback(user.email)}</AvatarFallback>
                   </Avatar>
                 </Button>
               </DropdownMenuTrigger>
@@ -180,5 +178,3 @@ export function Header() {
     </header>
   );
 }
-
-    
