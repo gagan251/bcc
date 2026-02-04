@@ -1,44 +1,11 @@
 'use client';
 
-import { useUser, useAuth } from '@/firebase';
-import { useRouter } from 'next/navigation';
-import {
-  Book,
-  CheckCircle,
-  FileText,
-  Gauge,
-  LogOut,
-  Settings,
-  Type,
-  User as UserIcon,
-} from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import Link from 'next/link';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import { useUser } from '@/firebase';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { signOut } from 'firebase/auth';
-import { MainContent } from '@/components/dashboard/main-content';
-import { Stats } from '@/components/dashboard/stats';
+import { YourCourses } from '@/components/dashboard/your-courses';
 
 export default function StudentDashboardPage() {
   const { user } = useUser();
-  const auth = useAuth();
-  const router = useRouter();
-
-  const handleSignOut = async () => {
-    try {
-      await signOut(auth);
-      router.push('/');
-    } catch (error) {
-      console.error('Error signing out: ', error);
-    }
-  };
 
   const getAvatarFallback = (email: string | null | undefined) => {
     if (!email) return 'U';
@@ -54,7 +21,7 @@ export default function StudentDashboardPage() {
               Welcome, {user?.displayName ?? 'Student'}
             </h1>
             <p className="text-sm text-gray-300">
-              Practice daily to improve speed and accuracy.
+              Your learning journey starts here.
             </p>
           </div>
           <div className="flex items-center gap-4">
@@ -68,8 +35,9 @@ export default function StudentDashboardPage() {
           </div>
         </div>
       </header>
-      <Stats />
-      <MainContent />
+      <div className="mt-6">
+        <YourCourses />
+      </div>
     </>
   );
 }
