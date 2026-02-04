@@ -22,9 +22,9 @@ export function Footer() {
                 <Phone className="h-4 w-4" />
                 <span>+91 12345 67890</span>
               </a>
-              <a href="mailto:info@bharatcc.com" className="flex items-center gap-2 hover:text-primary">
+              <a href="mailto:gagangorsi251@gmail.com" className="flex items-center gap-2 hover:text-primary">
                 <Mail className="h-4 w-4" />
-                <span>info@bharatcc.com</span>
+                <span>gagangorsi251@gmail.com</span>
               </a>
             </div>
           </div>
