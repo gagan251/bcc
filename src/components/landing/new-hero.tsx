@@ -28,9 +28,9 @@ export function NewHero() {
                 <Image
                   src={heroImage.imageUrl}
                   alt={heroImage.description}
-                  width={600}
-                  height={400}
-                  className="rounded-lg"
+                  width={400}
+                  height={500}
+                  className="rounded-lg object-cover"
                   data-ai-hint={heroImage.imageHint}
                   priority
                 />
@@ -42,4 +42,3 @@ export function NewHero() {
     </section>
   );
 }
-
