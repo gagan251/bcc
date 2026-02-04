@@ -1,7 +1,6 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Separator } from '@/components/ui/separator';
 
 const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
@@ -13,7 +12,7 @@ const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
 
 export function LoginCard() {
   return (
-    <Card className="w-full max-w-sm">
+    <Card className="w-full max-w-sm bg-card/70 backdrop-blur-sm">
       <CardHeader className="text-center">
         <CardTitle>Student Login</CardTitle>
         <CardDescription>Access your dashboard</CardDescription>
@@ -27,13 +26,10 @@ export function LoginCard() {
                 <GoogleIcon className="mr-2 h-4 w-4" /> Google Login
             </Link>
         </Button>
-        <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t" />
-            </div>
-            <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-card px-2 text-muted-foreground">Or</span>
-            </div>
+        <div className="flex items-center gap-2">
+            <div className="flex-1 border-t" />
+            <span className="text-xs uppercase text-muted-foreground">Or</span>
+            <div className="flex-1 border-t" />
         </div>
         <Button variant="secondary" asChild>
             <Link href="/admin/login">Admin Login</Link>
