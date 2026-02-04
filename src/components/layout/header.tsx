@@ -53,7 +53,7 @@ export function Header() {
         <Link
           key={link.href}
           href={link.href}
-          className="text-sm font-medium text-foreground/80 transition-colors hover:text-primary"
+          className="text-sm font-medium text-foreground/80 transition-colors hover:text-primary px-3 py-2 rounded-md hover:bg-accent"
           {...props}
         >
           {link.label}
@@ -71,7 +71,7 @@ export function Header() {
           <Type className="h-6 w-6 text-primary" />
           <span className="font-bold">Bharat Communication Center</span>
         </Link>
-        <nav className="hidden items-center gap-6 md:flex">
+        <nav className="hidden items-center gap-1 md:flex">
           <NavLinks />
         </nav>
         <div className="flex items-center gap-2">
