@@ -10,7 +10,7 @@ import {
 import { Bell, Menu, LogOut, LayoutDashboard } from 'lucide-react';
 import { useUser } from '@/firebase';
 import { signOut, getAuth } from 'firebase/auth';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -21,6 +21,8 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { SiteLogo } from '../site-logo';
+import { useState, useEffect } from 'react';
+import { cn } from '@/lib/utils';
 
 const navLinks = [
   { href: '#home', label: 'Home' },
@@ -33,6 +35,25 @@ const navLinks = [
 export function Header() {
   const { user, isUserLoading } = useUser();
   const router = useRouter();
+  const pathname = usePathname();
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  const isHomePage = pathname === '/';
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 10);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    // Run on mount to set initial state
+    handleScroll();
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
 
   const handleSignOut = async () => {
     try {
@@ -48,13 +69,18 @@ export function Header() {
     return email.charAt(0).toUpperCase();
   };
 
+  const useTransparentHeader = isHomePage && !isScrolled;
+
   const NavLinks = ({...props}) => (
     <>
       {navLinks.map((link) => (
         <Link
           key={link.href}
           href={link.href}
-          className="text-sm font-medium text-white/80 transition-colors hover:text-white px-3 py-2 rounded-md"
+          className={cn(
+            "text-sm font-medium transition-colors px-3 py-2 rounded-md",
+            useTransparentHeader ? "text-white/80 hover:text-white" : "text-muted-foreground hover:text-foreground"
+          )}
           {...props}
         >
           {link.label}
@@ -65,15 +91,18 @@ export function Header() {
 
   return (
     <header
-      className={`sticky top-0 z-50 w-full bg-transparent`}
+      className={cn(
+        `sticky top-0 z-50 w-full transition-colors duration-200`,
+        useTransparentHeader ? "bg-transparent" : "bg-background/80 backdrop-blur-sm border-b"
+      )}
     >
       <div className="container mx-auto flex h-16 max-w-screen-xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <Link href="/" className="flex items-center gap-2">
           <SiteLogo className="h-6 w-6" />
-          <span className="font-bold text-white">Bharat Communication Center</span>
+          <span className={cn("font-bold", useTransparentHeader ? "text-white" : "text-foreground")}>Bharat Communication Center</span>
         </Link>
         <nav className="hidden items-center gap-1 md:flex">
-          <NavLinks />
+          {isHomePage ? <NavLinks /> : null}
         </nav>
         <div className="flex items-center gap-2">
           {isUserLoading ? (
@@ -110,22 +139,22 @@ export function Header() {
             </DropdownMenu>
           ) : (
             <>
-              <Button variant="ghost" size="sm" asChild className="hidden md:flex text-white hover:bg-white/10 hover:text-white">
+              <Button variant="ghost" size="sm" asChild className={cn("hidden md:flex", useTransparentHeader ? 'text-white hover:bg-white/10 hover:text-white' : '')}>
                 <Link href="/login">Login</Link>
               </Button>
-              <Button size="sm" asChild className="hidden md:flex bg-white/10 text-white hover:bg-white/20">
+              <Button size="sm" asChild className={cn("hidden md:flex", useTransparentHeader ? 'bg-white/10 text-white hover:bg-white/20' : '')}>
                 <Link href="/signup">Sign Up</Link>
               </Button>
             </>
           )}
           
-          <Button variant="ghost" size="icon" className="h-9 w-9 text-white hover:bg-white/10 hover:text-white">
+          <Button variant="ghost" size="icon" className={cn("h-9 w-9", useTransparentHeader ? 'text-white hover:bg-white/10 hover:text-white' : '')}>
             <Bell className="h-4 w-4" />
             <span className="sr-only">Notifications</span>
           </Button>
           <Sheet>
             <SheetTrigger asChild>
-              <Button variant="outline" size="icon" className="md:hidden h-9 w-9 bg-transparent border-white/20 text-white hover:bg-white/10 hover:text-white">
+              <Button variant="outline" size="icon" className={cn("md:hidden h-9 w-9", useTransparentHeader ? 'bg-transparent border-white/20 text-white hover:bg-white/10 hover:text-white' : '')}>
                 <Menu className="h-4 w-4" />
                 <span className="sr-only">Open menu</span>
               </Button>
