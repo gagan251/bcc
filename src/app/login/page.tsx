@@ -45,7 +45,7 @@ export default function LoginPage() {
       </div>
       <main className="grid min-h-screen place-items-center p-6">
         <section
-          className="w-full max-w-[720px] rounded-[22px] border-2 border-[rgba(120,140,170,.55)] bg-[linear-gradient(135deg,rgba(255,255,255,.75)_0%,rgba(255,255,255,.48)_55%,rgba(255,255,255,.35)_100%)] py-[34px] px-[20px] shadow-[0_20px_60px_rgba(20,30,50,.18)] backdrop-blur-[10px] md:py-[52px] md:px-[64px]"
+          className="w-full max-w-md rounded-[22px] border-2 border-[rgba(120,140,170,.55)] bg-[linear-gradient(135deg,rgba(255,255,255,.75)_0%,rgba(255,255,255,.48)_55%,rgba(255,255,255,.35)_100%)] py-[34px] px-[20px] shadow-[0_20px_60px_rgba(20,30,50,.18)] backdrop-blur-[10px] md:py-[52px] md:px-[64px]"
           aria-label="Login form"
         >
           <h1 className="mb-[28px] text-center text-[28px] font-semibold tracking-[.2px] md:text-[34px]">
