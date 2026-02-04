@@ -1,0 +1,186 @@
+/**
+ * Core Philosophy: This ruleset enforces a strict security model that separates public
+ * content from private user data. The core principle is path-based ownership, where all
+ * data specific to a user (like enrollments and test results) is stored in a data tree
+ * that only they can access. Publicly-accessible content like courses and lessons are
+ * readable by any authenticated user but are currently write-protected until an
+ * administrative role or ownership model is defined.
+ *
+ * Data Structure:
+ * - /users/{userId}/...
+ *   - This path contains all private data for a specific user. Access is strictly
+ *     limited to the authenticated user whose UID matches the {userId}.
+ * - /courses/{courseId}/...
+ *   - This path contains all public-facing educational content, such as course
+ *     descriptions, lessons, and tests. This data is readable by all signed-in users.
+ *
+ * Key Security Decisions:
+ * - User Data Privacy: A user can only access their own document and subcollections
+ *   within `/users/{userId}`. User listing is explicitly disabled to protect privacy.
+ * - Public Read-Only Content: Course content is readable by any authenticated user to
+ *   allow browsing, but all write operations (create, update, delete) are disallowed
+ *   by default. This is a secure default posture pending implementation of content
+ *   management roles (e.g., admins, instructors).
+ * - Relational Integrity: On creation, documents within a user's private data tree
+ *   (e.g., an enrollment) must contain a `userId` field that matches the user's path ID.
+ *   This field is then enforced as immutable to maintain a consistent data model.
+ *
+ * Denormalization for Authorization:
+ * The data model is already well-structured for security rules. By placing user-specific
+ * documents like `enrollments` and `testResults` in a subcollection under the user's
+ * document, we can use fast, simple path-based ownership rules (`isOwner(userId)`)
+ * without needing slow and costly `get()` calls to other documents to verify permissions.
+ *
+ * Structural Segregation:
+ * The ruleset leverages the clear separation between the private `/users` collection and
+ * the public `/courses` collection. This allows for simple, performant, and secure rules
+ * for listing documents, as we can grant broad list access to `/courses` without fear
+ * of exposing private user information.
+ */
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ------------------------------------------------------------------------
+    // Helper Functions
+    // ------------------------------------------------------------------------
+
+    /**
+     * Checks if a user is authenticated.
+     */
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    /**
+     * Checks if the currently authenticated user's UID matches the provided userId.
+     * This is the foundation of the user-ownership security model.
+     * @param userId The UID of the user to check against.
+     */
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    /**
+     * Checks if a document exists and if the requester is the owner.
+     * Used for safe update and delete operations.
+     * @param userId The UID of the document owner.
+     */
+    function isExistingOwner(userId) {
+      return isOwner(userId) && resource != null;
+    }
+
+    // ------------------------------------------------------------------------
+    // User Profile Rules
+    // ------------------------------------------------------------------------
+
+    /**
+     * @description Controls access to a user's own profile document.
+     * @path /users/{userId}
+     * @allow (create) A new user creating their own profile document.
+     * @allow (get/update/delete) The user {userId} accessing their own document.
+     * @deny (list) Any user attempting to list all user profiles.
+     * @deny (get) A user trying to read another user's profile.
+     * @principle A user has sole control over their own profile document. User enumeration is forbidden.
+     */
+    match /users/{userId} {
+      allow get: if isOwner(userId);
+      allow list: if false;
+      allow create: if isOwner(userId)
+                    && request.resource.data.id == userId;
+      allow update: if isExistingOwner(userId)
+                    && request.resource.data.id == resource.data.id;
+      allow delete: if isExistingOwner(userId);
+
+      // ------------------------------------------------------------------------
+      // User Subcollection Rules
+      // ------------------------------------------------------------------------
+
+      /**
+       * @description Controls access to a user's course enrollment records.
+       * @path /users/{userId}/enrollments/{enrollmentId}
+       * @allow (create/get/list/update/delete) The user {userId} managing their own enrollments.
+       * @deny (any) Any user trying to access another user's enrollment records.
+       * @principle Restricts access to a user's own data tree using path-based ownership.
+       */
+      match /enrollments/{enrollmentId} {
+        allow get: if isOwner(userId);
+        allow list: if isOwner(userId);
+        allow create: if isOwner(userId)
+                      && request.resource.data.userId == userId;
+        allow update: if isExistingOwner(userId)
+                      && request.resource.data.userId == resource.data.userId;
+        allow delete: if isExistingOwner(userId);
+      }
+
+      /**
+       * @description Controls access to a user's test results.
+       * @path /users/{userId}/testResults/{testResultId}
+       * @allow (create/get/list/update/delete) The user {userId} managing their own test results.
+       * @deny (any) Any user trying to access another user's test results.
+       * @principle Restricts access to a user's own data tree using path-based ownership.
+       */
+      match /testResults/{testResultId} {
+        allow get: if isOwner(userId);
+        allow list: if isOwner(userId);
+        allow create: if isOwner(userId)
+                      && request.resource.data.userId == userId;
+        allow update: if isExistingOwner(userId)
+                      && request.resource.data.userId == resource.data.userId;
+        allow delete: if isExistingOwner(userId);
+      }
+    }
+
+    // ------------------------------------------------------------------------
+    // Public Course Content Rules
+    // ------------------------------------------------------------------------
+
+    /**
+     * @description Controls access to the top-level courses collection.
+     * @path /courses/{courseId}
+     * @allow (get/list) Any authenticated user browsing the list of available courses.
+     * @deny (create/update/delete) All write operations are denied until an admin/instructor role is implemented.
+     * @principle Public data is readable by all signed-in users, but writes are restricted for security.
+     */
+    match /courses/{courseId} {
+      allow get: if isSignedIn();
+      allow list: if isSignedIn();
+      // CRITICAL: Cannot implement owner-only writes. The 'Course' entity is missing an 'ownerId' or 'authorId' field.
+      allow create: if false; // TODO: Add admin/owner validation once the schema is updated with an ownership field.
+      allow update: if false; // TODO: Add admin/owner validation once the schema is updated with an ownership field.
+      allow delete: if false; // TODO: Add admin/owner validation once the schema is updated with an ownership field.
+
+      /**
+       * @description Controls access to lessons within a course.
+       * @path /courses/{courseId}/lessons/{lessonId}
+       * @allow (get/list) Any authenticated user reading the lessons of a course.
+       * @deny (create/update/delete) All write operations are denied.
+       * @principle Public data is readable by all signed-in users, but writes are restricted for security.
+       */
+      match /lessons/{lessonId} {
+        allow get: if isSignedIn();
+        allow list: if isSignedIn();
+        // CRITICAL: Cannot implement owner-only writes. The 'Lesson' entity is missing an 'ownerId' or 'authorId' field.
+        allow create: if false; // TODO: Add admin/owner validation once the schema is updated with an ownership field.
+        allow update: if false; // TODO: Add admin/owner validation once the schema is updated with an ownership field.
+        allow delete: if false; // TODO: Add admin/owner validation once the schema is updated with an ownership field.
+      }
+
+      /**
+       * @description Controls access to tests within a course.
+       * @path /courses/{courseId}/tests/{testId}
+       * @allow (get/list) Any authenticated user viewing the tests for a course.
+       * @deny (create/update/delete) All write operations are denied.
+       * @principle Public data is readable by all signed-in users, but writes are restricted for security.
+       */
+      match /tests/{testId} {
+        allow get: if isSignedIn();
+        allow list: if isSignedIn();
+        // CRITICAL: Cannot implement owner-only writes. The 'Test' entity is missing an 'ownerId' or 'authorId' field.
+        allow create: if false; // TODO: Add admin/owner validation once the schema is updated with an ownership field.
+        allow update: if false; // TODO: Add admin/owner validation once the schema is updated with an ownership field.
+        allow delete: if false; // TODO: Add admin/owner validation once the schema is updated with an ownership field.
+      }
+    }
+  }
+}
