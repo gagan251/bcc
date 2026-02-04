@@ -3,7 +3,6 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 import { cn } from '@/lib/utils';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 
@@ -17,8 +16,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const bgImage = PlaceHolderImages.find((img) => img.id === 'background-image');
-
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
@@ -32,11 +29,15 @@ export default function RootLayout({
           inter.variable
         )}
       >
-        <div 
-          className="fixed inset-0 z-[-1] bg-cover bg-center"
-          style={{ backgroundImage: bgImage ? `url(${bgImage.imageUrl})` : 'none' }}
+        <div
+          className="fixed inset-0 -z-10"
+          style={{
+            backgroundColor: "hsl(var(--background))",
+            backgroundImage:
+              "radial-gradient(ellipse at top left, hsla(25, 95%, 53%, 0.1) 0%, transparent 50%), " +
+              "radial-gradient(ellipse at bottom right, hsla(217, 91%, 60%, 0.15) 0%, transparent 50%)",
+          }}
         />
-        <div className="fixed inset-0 z-[-1] bg-background/95" />
 
         {children}
         <Toaster />
