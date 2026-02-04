@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { Menu, Type } from 'lucide-react';
+import { Bell, Menu, Type } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 const navLinks = [
@@ -57,6 +57,10 @@ export function Header() {
           <Button asChild className="hidden md:flex">
             <Link href="/admin/login">Admin Login</Link>
           </Button>
+          <Button variant="ghost" size="icon" className="hidden md:flex">
+            <Bell className="h-4 w-4" />
+            <span className="sr-only">Notifications</span>
+          </Button>
           <Sheet>
             <SheetTrigger asChild>
               <Button variant="outline" size="icon" className="md:hidden">
@@ -73,9 +77,15 @@ export function Header() {
                 <nav className="flex flex-col gap-6">
                   <NavLinks />
                 </nav>
-                <Button asChild className="mt-auto">
-                  <Link href="/admin/login">Admin Login</Link>
-                </Button>
+                <div className="mt-auto space-y-4">
+                    <Button variant="ghost" className="w-full justify-start">
+                        <Bell className="mr-2 h-4 w-4" />
+                        Notifications
+                    </Button>
+                    <Button asChild className='w-full'>
+                      <Link href="/admin/login">Admin Login</Link>
+                    </Button>
+                </div>
               </div>
             </SheetContent>
           </Sheet>
