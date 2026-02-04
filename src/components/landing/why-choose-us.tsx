@@ -1,6 +1,4 @@
-import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { BarChart, Goal, Sparkles, UserCheck } from 'lucide-react';
-import Image from 'next/image';
 
 const features = [
   {
@@ -26,13 +24,11 @@ const features = [
 ];
 
 export function WhyChooseUs() {
-  const studentImage = PlaceHolderImages.find((img) => img.id === 'why-choose-us-student');
-
   return (
     <section id="why-us" className="container mx-auto">
-      <div className="grid grid-cols-1 items-center gap-12 md:grid-cols-2">
-        <div className="space-y-8">
-            <div className="text-center md:text-left">
+      <div className="grid grid-cols-1 items-center gap-12">
+        <div className="mx-auto max-w-3xl space-y-8">
+            <div className="text-center">
                 <h2 className="font-headline text-3xl font-extrabold tracking-tight sm:text-4xl">
                 Why Choose Us
                 </h2>
@@ -51,18 +47,6 @@ export function WhyChooseUs() {
               </div>
             </div>
           ))}
-        </div>
-        <div className="flex items-center justify-center">
-            {studentImage && (
-                <Image
-                    src={studentImage.imageUrl}
-                    alt={studentImage.description}
-                    width={600}
-                    height={800}
-                    className="rounded-lg shadow-2xl"
-                    data-ai-hint={studentImage.imageHint}
-                />
-            )}
         </div>
       </div>
     </section>
