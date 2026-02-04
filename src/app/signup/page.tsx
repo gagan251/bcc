@@ -14,7 +14,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Type, Loader2 } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import {
   getAuth,
@@ -24,6 +24,7 @@ import {
 import { doc } from 'firebase/firestore';
 import { useFirestore } from '@/firebase';
 import { setDocumentNonBlocking } from '@/firebase/non-blocking-updates';
+import { SiteLogo } from '@/components/site-logo';
 
 export default function SignupPage() {
   const [isCaptchaChecked, setIsCaptchaChecked] = useState(false);
@@ -104,7 +105,7 @@ export default function SignupPage() {
       <div className="w-full max-w-md space-y-6">
         <div className="text-center">
           <Link href="/" className="mb-4 inline-flex items-center gap-2">
-            <Type className="h-8 w-8 text-primary" />
+            <SiteLogo className="h-8 w-8" />
             <span className="text-2xl font-bold">
               Bharat Communication Center
             </span>
@@ -205,5 +206,3 @@ export default function SignupPage() {
     </div>
   );
 }
-
-    

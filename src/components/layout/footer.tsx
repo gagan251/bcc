@@ -1,5 +1,6 @@
-import { Mail, Phone, Type } from 'lucide-react';
+import { Mail, Phone } from 'lucide-react';
 import Link from 'next/link';
+import { SiteLogo } from '../site-logo';
 
 export function Footer() {
   return (
@@ -8,7 +9,7 @@ export function Footer() {
         <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
           <div className="space-y-4">
             <Link href="/" className="flex items-center gap-2">
-              <Type className="h-8 w-8 text-primary" />
+              <SiteLogo className="h-8 w-8" />
               <span className="text-xl font-bold">Bharat Communication Center</span>
             </Link>
             <p className="text-sm text-muted-foreground">Design and Communication Center</p>

@@ -7,7 +7,7 @@ import {
   SheetContent,
   SheetTrigger,
 } from '@/components/ui/sheet';
-import { Bell, Menu, Type, LogOut, LayoutDashboard } from 'lucide-react';
+import { Bell, Menu, LogOut, LayoutDashboard } from 'lucide-react';
 import { useUser } from '@/firebase';
 import { signOut, getAuth } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
@@ -20,6 +20,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { SiteLogo } from '../site-logo';
 
 const navLinks = [
   { href: '#home', label: 'Home' },
@@ -68,7 +69,7 @@ export function Header() {
     >
       <div className="container mx-auto flex h-16 max-w-screen-xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <Link href="/" className="flex items-center gap-2">
-          <Type className="h-6 w-6 text-primary" />
+          <SiteLogo className="h-6 w-6" />
           <span className="font-bold">Bharat Communication Center</span>
         </Link>
         <nav className="hidden items-center gap-1 md:flex">
@@ -132,7 +133,7 @@ export function Header() {
             <SheetContent side="right">
               <div className="flex h-full flex-col p-6">
                 <Link href="/" className="mb-8 flex items-center gap-2">
-                  <Type className="h-6 w-6 text-primary" />
+                  <SiteLogo className="h-6 w-6" />
                   <span className="font-bold">Bharat Communication Center</span>
                 </Link>
                 <nav className="flex flex-col gap-6">

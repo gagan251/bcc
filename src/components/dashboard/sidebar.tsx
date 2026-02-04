@@ -9,7 +9,6 @@ import {
   Gauge,
   LogOut,
   Settings,
-  Type,
   User as UserIcon,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -23,11 +22,12 @@ import {
 } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { signOut } from 'firebase/auth';
+import { SiteLogo } from '../site-logo';
 
 const navLinks = [
   { href: '/dashboard', label: 'Dashboard', icon: Gauge },
   { href: '/dashboard/profile', label: 'Profile', icon: UserIcon },
-  { href: '/dashboard/typing', label: 'Typing Practice', icon: Type },
+  { href: '/dashboard/typing', label: 'Typing Practice', icon: SiteLogo },
   { href: '/dashboard/steno', label: 'Steno Practice', icon: Book },
   {
     href: '/dashboard/materials',

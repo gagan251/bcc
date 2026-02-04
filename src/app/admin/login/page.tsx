@@ -3,7 +3,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Shield, Type } from 'lucide-react';
+import { Shield } from 'lucide-react';
+import { SiteLogo } from '@/components/site-logo';
 
 export default function AdminLoginPage() {
   return (
@@ -11,7 +12,7 @@ export default function AdminLoginPage() {
       <div className="w-full max-w-md space-y-6">
         <div className="text-center">
             <Link href="/" className="inline-flex items-center gap-2 mb-4">
-                <Type className="h-8 w-8 text-primary" />
+                <SiteLogo className="h-8 w-8" />
                 <span className="text-2xl font-bold">Bharat Communication Center</span>
             </Link>
         </div>
