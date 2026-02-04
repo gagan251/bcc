@@ -15,7 +15,7 @@
  *     descriptions, lessons, and tests. This data is readable by all signed-in users.
  * - /reviews/{reviewId}
  *   - This path stores user-submitted reviews. It is write-only for clients, meaning
- *     anyone can submit a review, but no one can read them through the client SDK.
+ *     anyone can submit a review, but only admins can read them.
  *
  * Key Security Decisions:
  * - User Data Privacy: A user can only access their own document and subcollections
@@ -24,22 +24,21 @@
  *   allow browsing, but all write operations (create, update, delete) are disallowed
  *   by default. This is a secure default posture pending implementation of content
  *   management roles (e.g., admins, instructors).
- * - Anonymous Write-Only Reviews: The `/reviews` collection allows any client to write
- *   a new document. This is useful for public feedback forms. All read and update
- *   operations are disabled to prevent users from seeing or tampering with other's
- *   feedback.
+ * - Admin-Readable Reviews: The `/reviews` collection allows any client to write
+ *   a new document. Read access is restricted to users with an 'admin' role.
  *
  * Denormalization for Authorization:
  * The data model is already well-structured for security rules. By placing user-specific
  * documents like `enrollments` and `testResults` in a subcollection under the user's
  * document, we can use fast, simple path-based ownership rules (`isOwner(userId)`)
  * without needing slow and costly `get()` calls to other documents to verify permissions.
+ * The `isAdmin` function uses a `get()` call, which is necessary for role-based access.
  *
  * Structural Segregation:
  * The ruleset leverages the clear separation between the private `/users` collection and
  * the public `/courses` collection. This allows for simple, performant, and secure rules
  * for listing documents, as we can grant broad list access to `/courses` without fear
- * of exposing private user information.
+ of exposing private user information.
  */
 rules_version = '2';
 service cloud.firestore {
@@ -66,6 +65,15 @@ service cloud.firestore {
     }
 
     /**
+     * Checks if the user has an 'admin' role in their user profile.
+     * This requires a document read, which has performance and cost implications.
+     */
+    function isAdmin() {
+      return isSignedIn() && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+
+    /**
      * Checks if a document exists and if the requester is the owner.
      * Used for safe update and delete operations.
      * @param userId The UID of the document owner.
@@ -79,17 +87,17 @@ service cloud.firestore {
     // ------------------------------------------------------------------------
 
     /**
-     * @description Controls access to a user's own profile document.
+     * @description Controls access to user profile documents.
      * @path /users/{userId}
-     * @allow (create) A new user creating their own profile document.
      * @allow (get/update/delete) The user {userId} accessing their own document.
-     * @deny (list) Any user attempting to list all user profiles.
+     * @allow (read) Admins can read user profiles.
+     * @deny (list) Any user attempting to list all user profiles, except admins.
      * @deny (get) A user trying to read another user's profile.
-     * @principle A user has sole control over their own profile document. User enumeration is forbidden.
+     * @principle A user has sole control over their own profile document. Admins have read access.
      */
     match /users/{userId} {
-      allow get: if isOwner(userId);
-      allow list: if false;
+      allow get: if isOwner(userId) || isAdmin();
+      allow list: if isAdmin();
       allow create: if isOwner(userId)
                     && request.resource.data.id == userId;
       allow update: if isExistingOwner(userId)
@@ -108,8 +116,8 @@ service cloud.firestore {
        * @principle Restricts access to a user's own data tree using path-based ownership.
        */
       match /enrollments/{enrollmentId} {
-        allow get: if isOwner(userId);
-        allow list: if isOwner(userId);
+        allow get: if isOwner(userId) || isAdmin();
+        allow list: if isOwner(userId) || isAdmin();
         allow create: if isOwner(userId)
                       && request.resource.data.userId == userId;
         allow update: if isExistingOwner(userId)
@@ -125,8 +133,8 @@ service cloud.firestore {
        * @principle Restricts access to a user's own data tree using path-based ownership.
        */
       match /testResults/{testResultId} {
-        allow get: if isOwner(userId);
-        allow list: if isOwner(userId);
+        allow get: if isOwner(userId) || isAdmin();
+        allow list: if isOwner(userId) || isAdmin();
         allow create: if isOwner(userId)
                       && request.resource.data.userId == userId;
         allow update: if isExistingOwner(userId)
@@ -139,14 +147,16 @@ service cloud.firestore {
     // Public Review Submission
     // ------------------------------------------------------------------------
     /**
-     * @description Controls write-only access for submitting reviews.
+     * @description Controls access for submitting and viewing reviews.
      * @path /reviews/{reviewId}
      * @allow (create) Anyone can submit a review with valid data.
-     * @deny (read/list/update/delete) All other operations are forbidden from the client.
-     * @principle Allows for public feedback submission while protecting data from being read or altered.
+     * @allow (read/list) Only users with an 'admin' role can read reviews.
+     * @deny (update/delete) All other operations are forbidden from the client.
+     * @principle Allows for public feedback submission while protecting data integrity.
      */
     match /reviews/{reviewId} {
-        allow read, update, delete, list: if false;
+        allow read, list: if isAdmin();
+        allow update, delete: if false;
         allow create: if request.resource.data.name is string
                        && request.resource.data.rating is number
                        && request.resource.data.feedback is string
@@ -168,10 +178,7 @@ service cloud.firestore {
     match /courses/{courseId} {
       allow get: if isSignedIn();
       allow list: if isSignedIn();
-      // CRITICAL: Cannot implement owner-only writes. The 'Course' entity is missing an 'ownerId' or 'authorId' field.
-      allow create: if false; // TODO: Add admin/owner validation once the schema is updated with an ownership field.
-      allow update: if false; // TODO: Add admin/owner validation once the schema is updated with an ownership field.
-      allow delete: if false; // TODO: Add admin/owner validation once the schema is updated with an ownership field.
+      allow create, update, delete: if isAdmin();
 
       /**
        * @description Controls access to lessons within a course.
@@ -183,10 +190,7 @@ service cloud.firestore {
       match /lessons/{lessonId} {
         allow get: if isSignedIn();
         allow list: if isSignedIn();
-        // CRITICAL: Cannot implement owner-only writes. The 'Lesson' entity is missing an 'ownerId' or 'authorId' field.
-        allow create: if false; // TODO: Add admin/owner validation once the schema is updated with an ownership field.
-        allow update: if false; // TODO: Add admin/owner validation once the schema is updated with an ownership field.
-        allow delete: if false; // TODO: Add admin/owner validation once the schema is updated with an ownership field.
+        allow create, update, delete: if isAdmin();
       }
 
       /**
@@ -199,10 +203,7 @@ service cloud.firestore {
       match /tests/{testId} {
         allow get: if isSignedIn();
         allow list: if isSignedIn();
-        // CRITICAL: Cannot implement owner-only writes. The 'Test' entity is missing an 'ownerId' or 'authorId' field.
-        allow create: if false; // TODO: Add admin/owner validation once the schema is updated with an ownership field.
-        allow update: if false; // TODO: Add admin/owner validation once the schema is updated with an ownership field.
-        allow delete: if false; // TODO: Add admin/owner validation once the schema is updated with an ownership field.
+        allow create, update, delete: if isAdmin();
       }
     }
   }
