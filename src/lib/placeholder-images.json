@@ -53,12 +53,6 @@
       "description": "A mechanical keyboard.",
       "imageUrl": "https://images.unsplash.com/photo-1664813398575-819b46e5ab8d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxtZWNoYW5pY2FsJTIwa2V5Ym9hcmR8ZW58MHx8fHwxNzcwMTk5MjcwfDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "mechanical keyboard"
-    },
-    {
-      "id": "scroller-7",
-      "description": "A close-up of a modern keyboard.",
-      "imageUrl": "https://images.unsplash.com/photo-1601429440705-3407758339c3?q=80&w=1925&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      "imageHint": "modern keyboard"
     }
   ]
 }
