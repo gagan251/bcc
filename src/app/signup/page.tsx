@@ -76,11 +76,11 @@ export default function SignupPage() {
       setDocumentNonBlocking(userDocRef, userData, { merge: true });
 
       toast({
-        title: 'Signup Successful!',
-        description: 'Redirecting to login...',
+        title: 'Welcome!',
+        description: 'Your account has been created. Redirecting to your dashboard...',
       });
 
-      router.push('/login');
+      router.push('/dashboard');
     } catch (error: any) {
       console.error(error);
       let description = 'An unexpected error occurred. Please try again.';

@@ -38,7 +38,16 @@ export default function LoginPage() {
     const password = formData.get('password') as string;
 
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      const user = userCredential.user;
+      toast({
+        title: `Welcome back, ${user.displayName || 'Student'}!`,
+        description: 'You are now logged in.',
+      });
       router.push('/dashboard');
     } catch (error: any) {
       console.error(error);
