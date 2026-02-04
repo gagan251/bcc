@@ -10,14 +10,11 @@ export function Hero() {
     <section id="home" className="container mx-auto">
       <div className="grid grid-cols-1 items-center gap-12 md:grid-cols-2">
         <div className="space-y-6 text-center md:text-left">
-          <span className="text-sm font-bold uppercase tracking-wider text-primary">
-            Design and Communication Center
-          </span>
-          <h1 className="font-headline text-4xl font-extrabold tracking-tight md:text-5xl lg:text-6xl">
+          <h1 className="font-headline text-4xl font-extrabold tracking-tight text-foreground md:text-5xl">
             Master Typing & Stenography with Daily Smart Practice
           </h1>
           <p className="text-lg text-muted-foreground">
-            Join Bharat Communication Center and improve speed, accuracy, and confidence.
+            Improve speed, accuracy, and confidence with daily practice and exam-oriented training.
           </p>
           <Button size="lg" asChild>
             <Link href="#courses">Explore Courses</Link>
@@ -30,7 +27,7 @@ export function Hero() {
               alt={heroImage.description}
               width={800}
               height={600}
-              className="rounded-lg shadow-2xl"
+              className="rounded-lg shadow-lg"
               data-ai-hint={heroImage.imageHint}
               priority
             />

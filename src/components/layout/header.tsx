@@ -10,7 +10,7 @@ const navLinks = [
   { href: '#home', label: 'Home' },
   { href: '#courses', label: 'Courses' },
   { href: '#why-us', label: 'Why Choose Us' },
-  { href: '#add-review', label: 'Reviews' },
+  { href: '#testimonials', label: 'Testimonials' },
   { href: '#contact', label: 'Contact' },
 ];
 
@@ -31,7 +31,7 @@ export function Header() {
         <Link
           key={link.href}
           href={link.href}
-          className="text-sm font-medium text-foreground/80 transition-colors hover:text-foreground"
+          className="text-sm font-medium text-foreground/80 transition-colors hover:text-primary"
         >
           {link.label}
         </Link>
@@ -42,7 +42,7 @@ export function Header() {
   return (
     <header
       className={`sticky top-0 z-50 w-full transition-all duration-300 ${
-        isScrolled ? 'bg-background/80 shadow-md backdrop-blur-sm' : 'bg-background/30 backdrop-blur-sm'
+        isScrolled ? 'bg-background/80 shadow-md backdrop-blur-sm' : 'bg-transparent'
       }`}
     >
       <div className="container mx-auto flex h-16 max-w-screen-xl items-center justify-between px-4 sm:px-6 lg:px-8">

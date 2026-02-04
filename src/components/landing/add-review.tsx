@@ -46,7 +46,7 @@ export function AddReview() {
     setTimeout(() => {
       setIsLoading(false);
       toast({
-        title: 'Review Submitted!',
+        title: 'Testimonial Submitted!',
         description: 'Thank you for your feedback.',
       });
       form.reset();
@@ -54,13 +54,13 @@ export function AddReview() {
   }
 
   return (
-    <section id="add-review" className="container mx-auto">
+    <section id="testimonials" className="container mx-auto">
       <div className="mb-12 text-center">
         <h2 className="font-headline text-3xl font-extrabold tracking-tight sm:text-4xl">
-          Leave a Review
+          Leave a Testimonial
         </h2>
         <p className="mt-4 text-lg text-muted-foreground">
-          Share your experience with us.
+          Share your experience with our community.
         </p>
       </div>
       <Card className="max-w-2xl mx-auto">
@@ -122,7 +122,7 @@ export function AddReview() {
                 ) : (
                   <Send className="mr-2 h-4 w-4" />
                 )}
-                Submit Review
+                Submit Testimonial
               </Button>
             </form>
           </Form>

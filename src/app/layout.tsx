@@ -25,20 +25,10 @@ export default function RootLayout({
       </head>
       <body
         className={cn(
-          'min-h-screen font-body antialiased',
+          'min-h-screen font-body bg-background antialiased',
           inter.variable
         )}
       >
-        <div
-          className="fixed inset-0 -z-10"
-          style={{
-            backgroundColor: "hsl(var(--background))",
-            backgroundImage:
-              "radial-gradient(ellipse at top left, hsla(25, 95%, 53%, 0.1) 0%, transparent 50%), " +
-              "radial-gradient(ellipse at bottom right, hsla(217, 91%, 60%, 0.15) 0%, transparent 50%)",
-          }}
-        />
-
         {children}
         <Toaster />
       </body>

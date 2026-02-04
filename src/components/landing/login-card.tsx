@@ -18,7 +18,7 @@ export function LoginCard() {
         <CardDescription>Access your dashboard</CardDescription>
       </CardHeader>
       <CardContent className="grid gap-4">
-        <Button asChild className="border border-transparent hover:bg-transparent hover:text-primary hover:border-primary">
+        <Button variant="outline" asChild>
             <Link href="/login">Student Login</Link>
         </Button>
         <Button variant="outline" asChild>
@@ -31,12 +31,13 @@ export function LoginCard() {
             <span className="text-xs uppercase text-muted-foreground">Or</span>
             <div className="flex-1 border-t" />
         </div>
-        <Button variant="secondary" asChild>
+        <Button variant="ghost" asChild>
             <Link href="/admin/login">Admin Login</Link>
         </Button>
       </CardContent>
-      <CardFooter>
-        <Button className="w-full hover:bg-transparent" variant="outline" asChild>
+      <CardFooter className="flex-col items-stretch gap-2">
+        <p className="text-center text-sm text-muted-foreground">New here? Start with Enroll Now.</p>
+        <Button className="w-full" asChild>
             <Link href="/signup">Enroll Now</Link>
         </Button>
       </CardFooter>
