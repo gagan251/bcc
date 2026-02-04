@@ -40,8 +40,8 @@ export default function LoginPage() {
   return (
     <div className="overflow-hidden bg-white text-[#1c2430]">
       <div className="fixed inset-0 -z-10">
-        <div className="absolute top-[-160px] left-[-140px] h-[520px] w-[520px] rounded-full bg-[radial-gradient(circle_at_30%_30%,#ffb24b_0%,#ff7a00_55%,#ff5a00_100%)]"></div>
-        <div className="absolute bottom-[-180px] right-[-180px] h-[560px] w-[560px] rounded-full bg-[radial-gradient(circle_at_30%_30%,#4aa7ff_0%,#1f78d1_60%,#0b5fb8_100%)]"></div>
+        <div className="absolute top-[-160px] left-[-140px] h-[520px] w-[520px] rounded-full bg-orange-500"></div>
+        <div className="absolute bottom-[-180px] right-[-180px] h-[560px] w-[560px] rounded-full bg-blue-600"></div>
       </div>
       <main className="grid min-h-screen place-items-center p-6">
         <section
