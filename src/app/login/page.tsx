@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 
 const EyeIcon = ({ className }: { className?: string }) => (
   <svg
@@ -26,10 +27,10 @@ export default function LoginPage() {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    const username = formData.get('username') as string;
+    const email = formData.get('email') as string;
 
     setMessage(
-      username ? `Logging in as ${username}...` : 'Logging in...'
+      email ? `Logging in as ${email}...` : 'Logging in...'
     );
 
     setTimeout(() => {
@@ -45,7 +46,7 @@ export default function LoginPage() {
       </div>
       <main className="grid min-h-screen place-items-center p-6">
         <section
-          className="w-full max-w-md rounded-[22px] border-2 border-[rgba(120,140,170,.55)] bg-[linear-gradient(135deg,rgba(255,255,255,.75)_0%,rgba(255,255,255,.48)_55%,rgba(255,255,255,.35)_100%)] py-[34px] px-[20px] shadow-[0_20px_60px_rgba(20,30,50,.18)] backdrop-blur-[10px] md:py-[52px] md:px-[64px]"
+          className="w-full max-w-md rounded-[22px] border-2 border-[rgba(120,140,170,.55)] bg-[linear-gradient(135deg,rgba(255,255,255,.75)_0%,rgba(255,255,255,.48)_55%,rgba(255,255,255,.35)_100%)] py-[34px] px-[20px] shadow-[0_20px_60px_rgba(20,30,50,.18)] backdrop-blur-[10px] md:py-[52px] md:px-[30px]"
           aria-label="Login form"
         >
           <h1 className="mb-[28px] text-center text-[28px] font-semibold tracking-[.2px] md:text-[34px]">
@@ -60,12 +61,12 @@ export default function LoginPage() {
           >
             <div className="relative">
               <input
-                id="username"
-                name="username"
-                type="text"
-                placeholder="Username"
+                id="email"
+                name="email"
+                type="email"
+                placeholder="Email"
                 required
-                autoComplete="username"
+                autoComplete="email"
                 className="h-[54px] w-full rounded-[10px] border border-[rgba(120,140,170,.35)] bg-[rgba(255,255,255,.65)] px-4 text-base text-[#1c2430] shadow-[inset_0_1px_0_rgba(255,255,255,.7)] outline-none placeholder:text-[rgba(28,36,48,.45)] focus:border-[rgba(31,120,209,.55)] focus:shadow-[0_0_0_4px_rgba(31,120,209,.12),inset_0_1px_0_rgba(255,255,255,.75)]"
               />
             </div>
@@ -94,6 +95,12 @@ export default function LoginPage() {
                 />
               </button>
             </div>
+            
+            <div className="text-right -mt-2">
+                <Link href="#" className="text-sm text-primary hover:underline">
+                    Forgot Password?
+                </Link>
+            </div>
 
             <button
               className="mt-[6px] h-[54px] cursor-pointer rounded-[10px] border-none bg-[linear-gradient(180deg,#2a8df1_0%,#1f78d1_55%,#1566b7_100%)] text-base font-semibold text-white shadow-[0_10px_18px_rgba(31,120,209,.25)] active:translate-y-px"
@@ -110,6 +117,13 @@ export default function LoginPage() {
             >
               {message}
             </p>
+
+            <div className="text-center text-sm text-muted-foreground">
+                Don't have an account?{' '}
+                <Link href="/signup" className="font-semibold text-primary hover:underline">
+                  Sign up
+                </Link>
+              </div>
           </form>
         </section>
       </main>
