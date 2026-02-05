@@ -29,7 +29,7 @@ export function NewHero() {
                   src={heroImage.imageUrl}
                   alt={heroImage.description}
                   width={300}
-                  height={300}
+                  height={450}
                   className="rounded-lg object-cover opacity-80"
                   data-ai-hint={heroImage.imageHint}
                   priority

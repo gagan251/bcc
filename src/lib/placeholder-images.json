@@ -8,9 +8,9 @@
     },
     {
       "id": "glass-hero-image",
-      "description": "A wire whisk.",
-      "imageUrl": "https://i.postimg.cc/vmhdx9sF/Whisk-b82ba988c90d2be95e149845e5dc8388dr.jpg",
-      "imageHint": "whisk kitchen"
+      "description": "A vintage typewriter in portrait.",
+      "imageUrl": "https://images.unsplash.com/photo-1554236376-35a1a0d2a818?q=80&w=1964&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "imageHint": "typewriter portrait"
     },
     {
       "id": "why-choose-us-student",
@@ -41,30 +41,6 @@
       "description": "Abstract background image",
       "imageUrl": "https://images.unsplash.com/photo-1519751138087-5bf79df62d5b?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
       "imageHint": "abstract background"
-    },
-    {
-      "id": "scroller-1",
-      "description": "A vintage typewriter in portrait orientation.",
-      "imageUrl": "https://images.unsplash.com/photo-1554236376-35a1a0d2a818?q=80&w=1964&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      "imageHint": "vintage typewriter"
-    },
-    {
-      "id": "scroller-2",
-      "description": "A close-up of a modern keyboard in portrait.",
-      "imageUrl": "https://images.unsplash.com/photo-1601000938259-9e1d73b5435a?q=80&w=1964&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      "imageHint": "modern keyboard"
-    },
-    {
-      "id": "scroller-3",
-      "description": "A person typing on a laptop, seen from above in portrait.",
-      "imageUrl": "https://images.unsplash.com/photo-1527443154391-507e9dc6c5cc?q=80&w=1964&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      "imageHint": "laptop typing"
-    },
-    {
-      "id": "scroller-4",
-      "description": "A laptop on a desk in portrait view.",
-      "imageUrl": "https://images.unsplash.com/photo-1547082299-de196ea013d6?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      "imageHint": "laptop desk"
     }
   ]
 }

@@ -6,7 +6,6 @@ import { Courses } from '@/components/landing/courses';
 import { EnrollmentFlow } from '@/components/landing/enrollment-flow';
 import { WhyChooseUs } from '@/components/landing/why-choose-us';
 import { AddReview } from '@/components/landing/add-review';
-import { ImageScroller } from '@/components/landing/image-scroller';
 
 export default function Home() {
   return (
@@ -19,7 +18,6 @@ export default function Home() {
             <div className="grid grid-cols-1 lg:grid-cols-12 lg:gap-8">
               <div className="lg:col-span-8">
                 <div className="space-y-24 py-16 md:py-24">
-                  <ImageScroller />
                   <Courses />
                   <EnrollmentFlow />
                   <WhyChooseUs />
