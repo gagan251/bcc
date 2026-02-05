@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef } from 'react';
-import { useUser, useAuth } from '@/firebase';
+import { useUser, useAuth, errorEmitter } from '@/firebase';
 import { updateProfile } from 'firebase/auth';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -27,48 +27,83 @@ export default function ProfilePage() {
     const file = event.target.files?.[0];
     if (!file || !auth.currentUser) return;
 
-    if (file.size > 2 * 1024 * 1024) { // 2MB limit
+    if (file.size > 5 * 1024 * 1024) { // 5MB limit, we will resize anyway
         toast({
             variant: 'destructive',
             title: 'File Too Large',
-            description: 'Please select an image smaller than 2MB.',
+            description: 'Please select an image smaller than 5MB.',
         });
         return;
     }
 
-
     setIsUploading(true);
 
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = async () => {
-      const dataUrl = reader.result as string;
-      try {
+    const resizeImage = (file: File): Promise<string> => {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = (e) => {
+                if (!e.target?.result) {
+                    return reject(new Error("Failed to read file."));
+                }
+                const img = document.createElement('img');
+                img.src = e.target.result as string;
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    const MAX_WIDTH = 512;
+                    const MAX_HEIGHT = 512;
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > height) {
+                        if (width > MAX_WIDTH) {
+                            height *= MAX_WIDTH / width;
+                            width = MAX_WIDTH;
+                        }
+                    } else {
+                        if (height > MAX_HEIGHT) {
+                            width *= MAX_HEIGHT / height;
+                            height = MAX_HEIGHT;
+                        }
+                    }
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    if (!ctx) {
+                        return reject(new Error('Could not get canvas context'));
+                    }
+                    ctx.drawImage(img, 0, 0, width, height);
+                    resolve(canvas.toDataURL(file.type, 0.9)); // 0.9 quality for JPG
+                }
+                img.onerror = reject;
+            };
+            reader.onerror = reject;
+        });
+    }
+
+    try {
+        const resizedDataUrl = await resizeImage(file);
+        
         if(auth.currentUser) {
-            await updateProfile(auth.currentUser, { photoURL: dataUrl });
+            await updateProfile(auth.currentUser, { photoURL: resizedDataUrl });
+            errorEmitter.emit('profile-updated');
             toast({
               title: 'Profile Picture Updated',
               description: 'Your new profile picture has been saved.',
             });
         }
-      } catch (error) {
+    } catch (error: any) {
         console.error('Error updating profile picture:', error);
+        let description = 'There was an error updating your profile picture.';
+        if(error.code === 'auth/invalid-photo-url') {
+            description = "The uploaded image is invalid or too large. Please try a different one.";
+        }
         toast({
           variant: 'destructive',
           title: 'Upload Failed',
-          description: 'There was an error updating your profile picture.',
+          description,
         });
-      } finally {
-        setIsUploading(false);
-      }
-    };
-    reader.onerror = (error) => {
-        console.error('Error reading file:', error);
-        toast({
-            variant: 'destructive',
-            title: 'File Read Error',
-            description: 'Could not read the selected file.',
-        });
+    } finally {
         setIsUploading(false);
     }
   };
@@ -108,7 +143,7 @@ export default function ProfilePage() {
               accept="image/png, image/jpeg, image/gif"
               disabled={isUploading}
             />
-            <p className="text-xs text-muted-foreground mt-2">PNG, JPG, GIF up to 2MB.</p>
+            <p className="text-xs text-muted-foreground mt-2">PNG, JPG, GIF up to 5MB.</p>
           </div>
         </div>
 
