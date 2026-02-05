@@ -131,3 +131,62 @@ body {
     transform: translate(-50%, -50%) rotate(360deg);
   }
 }
+
+.enrollment-bg {
+  background: radial-gradient(ellipse at bottom, #090940 0%, #04031f 100%);
+  overflow-x: hidden;
+}
+
+.step-item-container {
+  @apply relative flex flex-col items-center justify-between md:flex-row;
+}
+
+.step-item {
+  @apply relative flex flex-col items-center text-center w-full md:w-auto md:flex-1 py-8 md:py-0;
+}
+
+/* Connector lines for desktop */
+@media (min-width: 768px) {
+  .step-connector {
+    @apply absolute top-10 left-1/2 h-0.5 w-[calc(100%-10rem)] -translate-x-1/2;
+    background-color: hsl(var(--primary));
+    box-shadow: 0 0 8px hsl(var(--primary) / 0.7);
+    transform-origin: left;
+    animation: scale-in-x 1.5s 0.2s cubic-bezier(0.5, 1, 0.5, 1) forwards;
+    opacity: 0;
+  }
+}
+
+@keyframes scale-in-x {
+  from {
+    transform: scaleX(0) translateX(-50%);
+    opacity: 0;
+  }
+  to {
+    transform: scaleX(1) translateX(-50%);
+    opacity: 1;
+  }
+}
+
+/* Connector lines for mobile */
+@media (max-width: 767px) {
+  .step-connector-mobile {
+    @apply absolute left-1/2 top-0 w-0.5 h-[calc(100%-5rem)] -translate-x-1/2;
+    background-color: hsl(var(--primary));
+    box-shadow: 0 0 8px hsl(var(--primary) / 0.7);
+    transform-origin: top;
+    animation: scale-in-y 1.5s 0.2s cubic-bezier(0.5, 1, 0.5, 1) forwards;
+    opacity: 0;
+  }
+}
+
+@keyframes scale-in-y {
+  from {
+    transform: scaleY(0) translateX(-50%);
+    opacity: 0;
+  }
+  to {
+    transform: scaleY(1) translateX(-50%);
+    opacity: 1;
+  }
+}

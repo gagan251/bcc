@@ -25,32 +25,35 @@ const steps = [
 
 export function EnrollmentFlow() {
   return (
-    <section className="container mx-auto">
-      <div className="mb-12 text-center">
-        <h2 className="font-headline text-3xl font-extrabold tracking-tight sm:text-4xl">
-          Course Enrollment Flow
-        </h2>
-        <p className="mt-4 text-lg text-muted-foreground">
-          A simple and straightforward process.
-        </p>
-      </div>
-      <div className="relative">
-        <div
-          className="absolute left-0 top-1/2 hidden h-0.5 w-full -translate-y-1/2 bg-border md:block"
-          aria-hidden="true"
-        />
-        <div className="relative grid grid-cols-1 gap-8 md:grid-cols-4">
-          {steps.map((step, index) => (
-            <div key={index} className="flex flex-col items-center text-center">
-              <div className="flex h-16 w-16 items-center justify-center rounded-full border-2 border-primary bg-background shadow-lg">
-                <step.icon className="h-8 w-8 text-primary" />
+    <section className="enrollment-bg py-16 sm:py-24">
+      <div className="container mx-auto">
+        <div className="mb-16 text-center">
+          <h2 className="font-headline text-3xl font-extrabold tracking-tight sm:text-4xl text-white">
+            Course Enrollment Flow
+          </h2>
+          <p className="mt-4 text-lg text-white/80">
+            A simple and straightforward process.
+          </p>
+        </div>
+        <div className="relative">
+          {/* Desktop Connector */}
+          <div className="hidden md:block step-connector"></div>
+          {/* Mobile Connector */}
+          <div className="md:hidden step-connector-mobile"></div>
+
+          <div className="step-item-container">
+            {steps.map((step) => (
+              <div key={step.title} className="step-item">
+                <div className="flex h-20 w-20 items-center justify-center rounded-full border-2 border-primary bg-blue-900/30 backdrop-blur-sm shadow-lg shadow-primary/20 z-10">
+                  <step.icon className="h-10 w-10 text-primary" />
+                </div>
+                <h3 className="mt-6 text-lg font-semibold text-white">{step.title}</h3>
+                <p className="mt-2 text-sm text-white/70 max-w-[200px] mx-auto">
+                  {step.description}
+                </p>
               </div>
-              <h3 className="mt-4 text-lg font-semibold">{step.title}</h3>
-              <p className="mt-1 text-sm text-muted-foreground">
-                {step.description}
-              </p>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
     </section>
