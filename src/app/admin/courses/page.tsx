@@ -50,8 +50,6 @@ function AddCourseForm() {
         form.reset();
       })
       .catch((serverError) => {
-        console.error("Error adding course: ", serverError);
-        
         // This is for the Next.js error overlay in dev mode
         const permissionError = new FirestorePermissionError({
           path: coursesCollection.path,

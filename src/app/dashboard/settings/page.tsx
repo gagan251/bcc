@@ -51,7 +51,6 @@ export default function SettingsPage() {
         description: "Your display name has been successfully updated.",
       });
     } catch (error) {
-      console.error("Error updating profile:", error);
       toast({
         variant: "destructive",
         title: "Update failed",
@@ -75,7 +74,6 @@ export default function SettingsPage() {
         description: "Please check your inbox to reset your password.",
       });
     } catch (error) {
-      console.error("Error sending password reset email:", error);
       toast({
         variant: "destructive",
         title: "Error",
@@ -97,7 +95,6 @@ export default function SettingsPage() {
       });
       router.push('/');
     } catch (error: any) {
-      console.error("Error deleting account:", error);
       toast({
         variant: "destructive",
         title: "Deletion failed",

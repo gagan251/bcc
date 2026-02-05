@@ -56,7 +56,6 @@ export default function LoginPage() {
       router.push('/dashboard');
 
     } catch (error: any) {
-      console.error(error);
       let description = 'An error occurred during login. Please try again.';
       if (
         error.code === 'auth/wrong-password' ||

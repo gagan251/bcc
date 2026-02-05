@@ -39,7 +39,6 @@ export default function AdminForgotPasswordPage() {
         description: 'Please check your inbox for instructions to reset your password.',
       });
     } catch (error: any) {
-      console.error(error);
       let description = 'An error occurred. Please try again.';
       if (error.code === 'auth/user-not-found') {
         description = 'No user found with this email address.';

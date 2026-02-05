@@ -42,7 +42,6 @@ export default function VerifyNoticePage() {
                         router.push('/dashboard');
                     }
                 } catch (e) {
-                    console.error("Error reloading user:", e);
                     // This could happen if the user token expired.
                     // The onAuthStateChanged listener in the provider should handle the sign-out.
                 }

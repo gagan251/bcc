@@ -180,7 +180,6 @@ export default function ProfilePage() {
         setIsModalOpen(false);
         setImgSrc('');
     } catch (error: any) {
-        console.error('Error updating profile picture:', error);
         toast({
           variant: 'destructive',
           title: 'Upload Failed',

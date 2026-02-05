@@ -81,7 +81,6 @@ export default function SignupPage() {
       router.push('/dashboard');
 
     } catch (error: any) {
-      console.error(error);
       let description = 'An unexpected error occurred. Please try again.';
       if (error.code === 'auth/email-already-in-use') {
         description =
