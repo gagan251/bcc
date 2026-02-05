@@ -1,3 +1,4 @@
+
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -38,6 +39,12 @@ export default function AdminLoginPage() {
                 Login
               </Button>
             </form>
+            <div className="mt-4 text-center text-sm">
+                Don't have an admin account?{' '}
+                <Link href="/admin/signup" className="font-medium text-primary underline-offset-4 hover:underline">
+                    Sign up
+                </Link>
+            </div>
           </CardContent>
         </Card>
         <div className="text-center text-sm">

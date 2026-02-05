@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -138,14 +139,31 @@ export function Header() {
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
-            <>
-              <Button variant="outline" size="sm" asChild className={cn("hidden md:flex", useTransparentHeader ? 'text-white border-white/20 hover:bg-white/10' : '')}>
-                <Link href="/login">Login</Link>
-              </Button>
-              <Button size="sm" asChild className={cn("hidden md:flex", useTransparentHeader ? 'bg-white/20 text-white hover:bg-white/30' : '')}>
-                <Link href="/signup">Sign Up</Link>
-              </Button>
-            </>
+            <div className="hidden items-center gap-2 md:flex">
+                <Button 
+                    variant="outline" 
+                    size="sm" 
+                    asChild 
+                    className={cn(
+                        useTransparentHeader 
+                        ? 'text-white border-white/20 hover:bg-white/10 hover:text-white' 
+                        : ''
+                    )}
+                >
+                    <Link href="/login">Login</Link>
+                </Button>
+                <Button 
+                    size="sm" 
+                    asChild 
+                    className={cn(
+                        useTransparentHeader 
+                        ? 'bg-white/10 text-white hover:bg-white/20 border border-white/20' 
+                        : ''
+                    )}
+                >
+                    <Link href="/signup">Sign Up</Link>
+                </Button>
+            </div>
           )}
           
           <Button variant="ghost" size="icon" className={cn("h-9 w-9", useTransparentHeader ? 'text-white hover:bg-white/10 hover:text-white' : '')}>
@@ -159,14 +177,14 @@ export function Header() {
                 <span className="sr-only">Open menu</span>
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="bg-[#04031F] text-white">
+            <SheetContent side="right" className="w-full bg-card">
               <div className="flex h-full flex-col p-6">
                 <Link href="/" className="mb-8 flex items-center gap-2">
                   <SiteLogo className="h-6 w-6" />
                   <span className="font-bold">Bharat Communication Center</span>
                 </Link>
                 <nav className="flex flex-col gap-6">
-                  <NavLinks />
+                  {isHomePage ? <NavLinks onClick={() => (document.querySelector('[data-radix-dialog-close]') as HTMLElement)?.click()} /> : null}
                 </nav>
                 <div className="mt-auto space-y-2">
                   {user ? (
@@ -193,7 +211,7 @@ export function Header() {
                           <span className="w-full border-t"></span>
                       </div>
                       <div className="relative flex justify-center text-xs uppercase">
-                          <span className="bg-background px-2 text-muted-foreground">Or</span>
+                          <span className="bg-card px-2 text-muted-foreground">Or</span>
                       </div>
                   </div>
                    <Button variant="ghost" asChild className='w-full'>

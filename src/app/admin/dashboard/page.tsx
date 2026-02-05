@@ -1,3 +1,4 @@
+
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -45,11 +46,13 @@ export default function AdminDashboardPage() {
                     <CardTitle>Management Tools</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-2">
-                    <Button variant="outline" className="w-full justify-start">
+                    <Button variant="outline" className="w-full justify-start" disabled>
                         <Users className="mr-2 h-4 w-4" /> Manage Users
                     </Button>
-                    <Button variant="outline" className="w-full justify-start">
-                        <FileText className="mr-2 h-4 w-4" /> Manage Courses
+                    <Button asChild variant="outline" className="w-full justify-start">
+                        <Link href="/admin/courses">
+                            <FileText className="mr-2 h-4 w-4" /> Manage Courses
+                        </Link>
                     </Button>
                     <p className="text-xs text-center text-muted-foreground pt-2">More tools coming soon.</p>
                 </CardContent>
