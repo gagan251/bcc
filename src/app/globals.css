@@ -167,7 +167,7 @@
 /* Connector lines for mobile */
 @media (max-width: 767px) {
   .step-connector-mobile {
-    @apply absolute left-1/2 top-0 w-0.5 h-[calc(100%-5rem)] -translate-x-1/2;
+    @apply absolute left-1/2 top-20 bottom-20 w-0.5 -translate-x-1/2;
     background-color: hsl(var(--primary));
     box-shadow: 0 0 8px hsl(var(--primary) / 0.7);
     transform-origin: top;
