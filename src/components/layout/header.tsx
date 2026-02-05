@@ -167,10 +167,37 @@ export function Header() {
             </div>
           )}
           
-          <Button variant="ghost" size="icon" className={cn("h-9 w-9", useTransparentHeader ? 'text-white hover:bg-white/10 hover:text-white' : '')}>
-            <Bell className="h-4 w-4" />
-            <span className="sr-only">Notifications</span>
-          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon" className={cn("h-9 w-9", useTransparentHeader ? 'text-white hover:bg-white/10 hover:text-white' : '')}>
+                <Bell className="h-4 w-4" />
+                <span className="sr-only">Notifications</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-80">
+                <DropdownMenuLabel>Notifications</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <div className="p-2">
+                    <div className="flex items-start p-2 rounded-lg hover:bg-accent">
+                        <div className="ml-3">
+                            <p className="text-sm font-medium">New course available!</p>
+                            <p className="text-xs text-muted-foreground">Advanced Stenography has been added.</p>
+                        </div>
+                    </div>
+                    <div className="flex items-start p-2 rounded-lg hover:bg-accent">
+                        <div className="ml-3">
+                            <p className="text-sm font-medium">Profile Update</p>
+                            <p className="text-xs text-muted-foreground">Your profile was successfully updated.</p>
+                        </div>
+                    </div>
+                </div>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem className="justify-center">
+                    View all notifications
+                </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
           <Sheet>
             <SheetTrigger asChild>
               <Button variant="outline" size="icon" className={cn("md:hidden h-9 w-9", useTransparentHeader ? 'bg-transparent border-white/20 text-white hover:bg-white/10 hover:text-white' : '')}>
