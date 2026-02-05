@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useUser, useAuth, errorEmitter } from '@/firebase';
 import { updateProfile } from 'firebase/auth';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -40,6 +40,15 @@ export default function ProfilePage() {
   const [completedCrop, setCompletedCrop] = useState<PixelCrop>();
   const [isUploading, setIsUploading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // Clean up object URLs to prevent memory leaks
+  useEffect(() => {
+    return () => {
+      if (imgSrc && imgSrc.startsWith('blob:')) {
+        URL.revokeObjectURL(imgSrc);
+      }
+    };
+  }, [imgSrc]);
 
   const getAvatarFallback = (email: string | null | undefined) => {
     if (!email) return 'U';
@@ -104,11 +113,7 @@ export default function ProfilePage() {
       }
 
       setCrop(undefined) // Makes crop preview update between images.
-      const reader = new FileReader();
-      reader.addEventListener('load', () =>
-        setImgSrc(reader.result?.toString() || ''),
-      );
-      reader.readAsDataURL(file);
+      setImgSrc(URL.createObjectURL(file)); // Use object URL for memory efficiency
     }
   }
 
