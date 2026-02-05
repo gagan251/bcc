@@ -10,107 +10,158 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, Upload } from 'lucide-react';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogClose,
+} from "@/components/ui/dialog"
+import ReactCrop, {
+  centerCrop,
+  makeAspectCrop,
+  type Crop,
+  type PixelCrop,
+} from 'react-image-crop'
+import 'react-image-crop/dist/ReactCrop.css'
+
 
 export default function ProfilePage() {
   const { user } = useUser();
   const auth = useAuth();
   const { toast } = useToast();
+
+  const [imgSrc, setImgSrc] = useState('');
+  const imgRef = useRef<HTMLImageElement>(null);
+  const [crop, setCrop] = useState<Crop>();
+  const [completedCrop, setCompletedCrop] = useState<PixelCrop>();
   const [isUploading, setIsUploading] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const getAvatarFallback = (email: string | null | undefined) => {
     if (!email) return 'U';
     return email.charAt(0).toUpperCase();
   };
 
-  const handleImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file || !auth.currentUser) return;
+  function getCroppedImg(
+    image: HTMLImageElement,
+    crop: PixelCrop,
+  ): Promise<string> {
+    const canvas = document.createElement('canvas');
+    const scaleX = image.naturalWidth / image.width;
+    const scaleY = image.naturalHeight / image.height;
+    canvas.width = crop.width;
+    canvas.height = crop.height;
+    const ctx = canvas.getContext('2d');
 
-    if (file.size > 5 * 1024 * 1024) { // 5MB limit, we will resize anyway
+    if (!ctx) {
+      return Promise.reject(new Error('Could not get canvas context'));
+    }
+
+    const pixelRatio = window.devicePixelRatio;
+    canvas.width = crop.width * pixelRatio;
+    canvas.height = crop.height * pixelRatio;
+    ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+    ctx.imageSmoothingQuality = 'high';
+
+    ctx.drawImage(
+      image,
+      crop.x * scaleX,
+      crop.y * scaleY,
+      crop.width * scaleX,
+      crop.height * scaleY,
+      0,
+      0,
+      crop.width,
+      crop.height,
+    );
+
+    return new Promise((resolve) => {
+      resolve(canvas.toDataURL('image/jpeg', 0.9));
+    });
+  }
+
+  function onSelectFile(e: React.ChangeEvent<HTMLInputElement>) {
+    if (e.target.files && e.target.files.length > 0) {
+      const file = e.target.files[0];
+      if (file.type !== 'image/jpeg') {
         toast({
-            variant: 'destructive',
-            title: 'File Too Large',
-            description: 'Please select an image smaller than 5MB.',
+          variant: 'destructive',
+          title: 'Invalid File Type',
+          description: 'Please select a JPG image.',
         });
         return;
+      }
+      if (file.size > 5 * 1024 * 1024) { // 5MB limit
+        toast({
+          variant: 'destructive',
+          title: 'File Too Large',
+          description: 'Please select an image smaller than 5MB.',
+        });
+        return;
+      }
+
+      setCrop(undefined) // Makes crop preview update between images.
+      const reader = new FileReader();
+      reader.addEventListener('load', () =>
+        setImgSrc(reader.result?.toString() || ''),
+      );
+      reader.readAsDataURL(file);
     }
+  }
+
+  function onImageLoad(e: React.SyntheticEvent<HTMLImageElement>) {
+      const { width, height } = e.currentTarget;
+      const crop = centerCrop(
+      makeAspectCrop(
+          {
+          unit: '%',
+          width: 90,
+          },
+          1, // 1:1 aspect ratio
+          width,
+          height,
+      ),
+      width,
+      height,
+      );
+      setCrop(crop);
+  }
+
+  async function handleUpload() {
+    if (!completedCrop || !imgRef.current) {
+        toast({ variant: 'destructive', title: 'Crop Error', description: 'Please select and crop an image first.' });
+        return;
+    }
+    if(!auth.currentUser) return;
 
     setIsUploading(true);
-
-    const resizeImage = (file: File): Promise<string> => {
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = (e) => {
-                if (!e.target?.result) {
-                    return reject(new Error("Failed to read file."));
-                }
-                const img = document.createElement('img');
-                img.src = e.target.result as string;
-                img.onload = () => {
-                    const canvas = document.createElement('canvas');
-                    const MAX_WIDTH = 512;
-                    const MAX_HEIGHT = 512;
-                    let width = img.width;
-                    let height = img.height;
-
-                    if (width > height) {
-                        if (width > MAX_WIDTH) {
-                            height *= MAX_WIDTH / width;
-                            width = MAX_WIDTH;
-                        }
-                    } else {
-                        if (height > MAX_HEIGHT) {
-                            width *= MAX_HEIGHT / height;
-                            height = MAX_HEIGHT;
-                        }
-                    }
-                    canvas.width = width;
-                    canvas.height = height;
-                    const ctx = canvas.getContext('2d');
-                    if (!ctx) {
-                        return reject(new Error('Could not get canvas context'));
-                    }
-                    ctx.drawImage(img, 0, 0, width, height);
-                    resolve(canvas.toDataURL(file.type, 0.9)); // 0.9 quality for JPG
-                }
-                img.onerror = reject;
-            };
-            reader.onerror = reject;
-        });
-    }
-
     try {
-        const resizedDataUrl = await resizeImage(file);
+        const dataUrl = await getCroppedImg(imgRef.current, completedCrop);
         
-        if(auth.currentUser) {
-            await updateProfile(auth.currentUser, { photoURL: resizedDataUrl });
-            errorEmitter.emit('profile-updated');
-            toast({
-              title: 'Profile Picture Updated',
-              description: 'Your new profile picture has been saved.',
-            });
-        }
+        await updateProfile(auth.currentUser, { photoURL: dataUrl });
+        errorEmitter.emit('profile-updated');
+
+        toast({
+            title: 'Profile Picture Updated',
+            description: 'Your new profile picture has been saved.',
+        });
+        setIsModalOpen(false);
+        setImgSrc('');
     } catch (error: any) {
         console.error('Error updating profile picture:', error);
-        let description = 'There was an error updating your profile picture.';
-        if(error.code === 'auth/invalid-photo-url') {
-            description = "The uploaded image is invalid or too large. Please try a different one.";
-        }
         toast({
           variant: 'destructive',
           title: 'Upload Failed',
-          description,
+          description: 'There was an error uploading your cropped picture.',
         });
     } finally {
         setIsUploading(false);
     }
-  };
-
-  const handleUploadClick = () => {
-    fileInputRef.current?.click();
-  };
+  }
 
   return (
     <Card className="max-w-2xl mx-auto">
@@ -126,25 +177,64 @@ export default function ProfilePage() {
               {getAvatarFallback(user?.email)}
             </AvatarFallback>
           </Avatar>
-          <div>
-            <Button onClick={handleUploadClick} disabled={isUploading}>
-              {isUploading ? (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              ) : (
-                <Upload className="mr-2 h-4 w-4" />
-              )}
-              {isUploading ? 'Uploading...' : 'Upload New Picture'}
-            </Button>
-            <input
-              type="file"
-              ref={fileInputRef}
-              onChange={handleImageChange}
-              className="hidden"
-              accept="image/png, image/jpeg, image/gif"
-              disabled={isUploading}
-            />
-            <p className="text-xs text-muted-foreground mt-2">PNG, JPG, GIF up to 5MB.</p>
-          </div>
+          
+          <Dialog open={isModalOpen} onOpenChange={(isOpen) => {
+            setIsModalOpen(isOpen);
+            if (!isOpen) {
+              setImgSrc('');
+            }
+          }}>
+            <DialogTrigger asChild>
+                <Button>
+                    <Upload className="mr-2 h-4 w-4" />
+                    Upload New Picture
+                </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-md">
+                <DialogHeader>
+                    <DialogTitle>Update Profile Picture</DialogTitle>
+                    <DialogDescription>
+                        Crop your new profile picture. Only JPG files up to 5MB are allowed.
+                    </DialogDescription>
+                </DialogHeader>
+                <div className="grid gap-4 py-4">
+                    <Input type="file" accept="image/jpeg" onChange={onSelectFile} disabled={isUploading}/>
+                    {imgSrc && (
+                        <div className="flex justify-center bg-muted rounded-md p-2">
+                            <ReactCrop
+                                crop={crop}
+                                onChange={c => setCrop(c)}
+                                onComplete={c => setCompletedCrop(c)}
+                                aspect={1}
+                                circularCrop
+                                keepSelection
+                            >
+                                <img
+                                    ref={imgRef}
+                                    alt="Crop me"
+                                    src={imgSrc}
+                                    onLoad={onImageLoad}
+                                    style={{ maxHeight: '60vh', objectFit: 'contain' }}
+                                />
+                            </ReactCrop>
+                        </div>
+                    )}
+                </div>
+                <DialogFooter>
+                    <DialogClose asChild>
+                        <Button variant="outline" disabled={isUploading}>Cancel</Button>
+                    </DialogClose>
+                    <Button onClick={handleUpload} disabled={isUploading || !imgSrc}>
+                        {isUploading ? (
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        ) : (
+                        <Upload className="mr-2 h-4 w-4" />
+                        )}
+                        {isUploading ? 'Uploading...' : 'Save & Upload'}
+                    </Button>
+                </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </div>
 
         <div className="space-y-4">
