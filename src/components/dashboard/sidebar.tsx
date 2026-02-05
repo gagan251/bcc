@@ -61,7 +61,7 @@ export function Sidebar() {
   };
 
   return (
-    <aside className="hidden flex-col gap-4 rounded-lg border bg-card/80 p-4 shadow-sm backdrop-blur-sm lg:flex">
+    <div className="flex h-full flex-col gap-4">
       <Card className="text-center">
         <CardHeader>
           <Avatar className="mx-auto h-20 w-20 border-4 border-primary/20">
@@ -117,6 +117,6 @@ export function Sidebar() {
           <span className="text-xs font-semibold">Sign Out</span>
         </Button>
       </div>
-    </aside>
+    </div>
   );
 }
