@@ -139,10 +139,10 @@ export function Header() {
             </DropdownMenu>
           ) : (
             <>
-              <Button variant="ghost" size="sm" asChild className={cn("hidden md:flex", useTransparentHeader ? 'text-white hover:bg-white/10 hover:text-white' : '')}>
+              <Button variant="outline" size="sm" asChild className={cn("hidden md:flex", useTransparentHeader ? 'text-white border-white/20 hover:bg-white/10' : '')}>
                 <Link href="/login">Login</Link>
               </Button>
-              <Button size="sm" asChild className={cn("hidden md:flex", useTransparentHeader ? 'bg-white/10 text-white hover:bg-white/20' : '')}>
+              <Button size="sm" asChild className={cn("hidden md:flex", useTransparentHeader ? 'bg-white/20 text-white hover:bg-white/30' : '')}>
                 <Link href="/signup">Sign Up</Link>
               </Button>
             </>
