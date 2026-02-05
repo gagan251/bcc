@@ -28,10 +28,10 @@ export function EnrollmentFlow() {
     <section className="enrollment-bg py-16 sm:py-24">
       <div className="container mx-auto">
         <div className="mb-16 text-center">
-          <h2 className="font-sans text-3xl font-extrabold tracking-tight sm:text-4xl text-white">
+          <h2 className="font-sans text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
             Course Enrollment Flow
           </h2>
-          <p className="mt-4 text-lg text-white/80">
+          <p className="mt-4 text-lg text-muted-foreground">
             A simple and straightforward process.
           </p>
         </div>
@@ -44,11 +44,11 @@ export function EnrollmentFlow() {
           <div className="step-item-container">
             {steps.map((step) => (
               <div key={step.title} className="step-item">
-                <div className="flex h-20 w-20 items-center justify-center rounded-full border-2 border-primary bg-blue-900/30 backdrop-blur-sm shadow-lg shadow-primary/20 z-10">
+                <div className="z-10 flex h-20 w-20 items-center justify-center rounded-full border-2 border-primary bg-background/50 shadow-lg shadow-primary/20 backdrop-blur-sm dark:bg-blue-900/30">
                   <step.icon className="h-10 w-10 text-primary" />
                 </div>
-                <h3 className="mt-6 text-lg font-semibold text-white">{step.title}</h3>
-                <p className="mt-2 text-sm text-white/70 max-w-[200px] mx-auto">
+                <h3 className="mt-6 text-lg font-semibold text-foreground">{step.title}</h3>
+                <p className="mx-auto mt-2 max-w-[200px] text-sm text-muted-foreground">
                   {step.description}
                 </p>
               </div>

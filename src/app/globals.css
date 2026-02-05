@@ -154,8 +154,12 @@
 
 
 .enrollment-bg {
-  background: radial-gradient(ellipse at bottom, #090940 0%, #04031f 100%);
+  background: linear-gradient(180deg, hsl(var(--secondary)) 0%, hsl(var(--background)) 100%);
   overflow-x: hidden;
+}
+
+.dark .enrollment-bg {
+  background: radial-gradient(ellipse at bottom, #090940 0%, #04031f 100%);
 }
 
 .step-item-container {
@@ -192,12 +196,13 @@
 /* Connector lines for mobile */
 @media (max-width: 767px) {
   .step-connector-mobile {
-    @apply absolute left-1/2 top-20 bottom-20 w-0.5 -translate-x-1/2;
+    @apply absolute left-1/2 top-20 w-0.5 -translate-x-1/2;
     background-color: hsl(var(--primary));
     box-shadow: 0 0 8px hsl(var(--primary) / 0.7);
     transform-origin: top;
     animation: scale-in-y 1.5s 0.2s cubic-bezier(0.5, 1, 0.5, 1) forwards;
     opacity: 0;
+    height: calc(100% - 10rem);
   }
 }
 
