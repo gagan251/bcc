@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword, signOut } from 'firebase/auth';
 import { useAuth } from '@/firebase';
 import { Button } from '@/components/ui/button';
 import {
@@ -16,12 +16,13 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
-import { Eye, EyeOff, Loader2 } from 'lucide-react';
+import { Eye, EyeOff, Loader2, MailCheck } from 'lucide-react';
 import { SiteLogo } from '@/components/site-logo';
 
 export default function LoginPage() {
   const [passwordShown, setPasswordShown] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [showVerificationMessage, setShowVerificationMessage] = useState(false);
   const router = useRouter();
   const auth = useAuth();
   const { toast } = useToast();
@@ -33,6 +34,7 @@ export default function LoginPage() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
+    setShowVerificationMessage(false);
 
     const formData = new FormData(e.currentTarget);
     const email = formData.get('email') as string;
@@ -45,11 +47,17 @@ export default function LoginPage() {
         password
       );
       const user = userCredential.user;
-      toast({
-        title: `Welcome back, ${user.displayName || 'Student'}!`,
-        description: 'You are now logged in.',
-      });
-      router.push('/dashboard');
+      
+      if (user.emailVerified) {
+        toast({
+          title: `Welcome back, ${user.displayName || 'Student'}!`,
+          description: 'You are now logged in.',
+        });
+        router.push('/dashboard');
+      } else {
+        await signOut(auth);
+        setShowVerificationMessage(true);
+      }
     } catch (error: any) {
       console.error(error);
       let description = 'An error occurred during login. Please try again.';
@@ -69,6 +77,29 @@ export default function LoginPage() {
       setIsLoading(false);
     }
   };
+
+  if (showVerificationMessage) {
+    return (
+        <div className="flex min-h-screen items-center justify-center bg-background p-4">
+            <Card className="w-full max-w-md">
+                <CardHeader className="text-center">
+                    <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 mb-4">
+                        <MailCheck className="h-6 w-6 text-primary" />
+                    </div>
+                    <CardTitle className="text-2xl">Verify Your Email</CardTitle>
+                    <CardDescription>
+                        Your email has not been verified. Please check your email for the verification link, then try logging in again.
+                    </CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <Button onClick={() => setShowVerificationMessage(false)} className="w-full">
+                        Back to Login
+                    </Button>
+                </CardContent>
+            </Card>
+        </div>
+    );
+  }
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background p-4">

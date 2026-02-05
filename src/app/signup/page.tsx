@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -14,11 +13,13 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Loader2 } from 'lucide-react';
+import { Loader2, MailCheck } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import {
   createUserWithEmailAndPassword,
   updateProfile,
+  sendEmailVerification,
+  signOut,
 } from 'firebase/auth';
 import { doc } from 'firebase/firestore';
 import { useFirestore, useAuth } from '@/firebase';
@@ -28,7 +29,7 @@ import { SiteLogo } from '@/components/site-logo';
 export default function SignupPage() {
   const [isCaptchaChecked, setIsCaptchaChecked] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter();
+  const [emailSent, setEmailSent] = useState(false);
   const { toast } = useToast();
   const firestore = useFirestore();
   const auth = useAuth();
@@ -61,6 +62,7 @@ export default function SignupPage() {
       const user = userCredential.user;
 
       await updateProfile(user, { displayName });
+      await sendEmailVerification(user);
 
       const userDocRef = doc(firestore, 'users', user.uid);
       const userData = {
@@ -74,12 +76,9 @@ export default function SignupPage() {
       
       setDocumentNonBlocking(userDocRef, userData, { merge: true });
 
-      toast({
-        title: 'Welcome!',
-        description: 'Your account has been created. Redirecting to your dashboard...',
-      });
+      await signOut(auth);
+      setEmailSent(true);
 
-      router.push('/dashboard');
     } catch (error: any) {
       console.error(error);
       let description = 'An unexpected error occurred. Please try again.';
@@ -98,6 +97,29 @@ export default function SignupPage() {
       setIsLoading(false);
     }
   };
+
+  if (emailSent) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-background p-4">
+        <Card className="w-full max-w-md">
+          <CardHeader className="text-center">
+            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 mb-4">
+                <MailCheck className="h-6 w-6 text-primary" />
+            </div>
+            <CardTitle className="text-2xl">Verify Your Email</CardTitle>
+            <CardDescription>
+              We've sent a verification link to your email address. Please check your inbox and follow the instructions to activate your account.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button asChild className="w-full">
+              <Link href="/login">Back to Login</Link>
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background p-4">
