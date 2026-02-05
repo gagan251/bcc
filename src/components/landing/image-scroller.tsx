@@ -19,9 +19,9 @@ export function ImageScroller() {
                         <Image
                             src={image.imageUrl}
                             alt={image.description}
-                            width={350}
-                            height={233}
-                            className="rounded-lg object-cover aspect-[3/2] max-w-none"
+                            width={240}
+                            height={360}
+                            className="rounded-lg object-cover aspect-[2/3] max-w-none"
                             data-ai-hint={image.imageHint}
                         />
                     </li>
