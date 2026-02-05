@@ -134,6 +134,10 @@ export function Header() {
                 <DropdownMenuItem asChild>
                   <Link href="/dashboard"><LayoutDashboard className="mr-2"/>Dashboard</Link>
                 </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}>
+                  {theme === 'light' ? <Moon className="mr-2"/> : <Sun className="mr-2"/>}
+                  <span>{theme === 'light' ? 'Dark' : 'Light'} Mode</span>
+                </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleSignOut}>
                   <LogOut className="mr-2"/>
