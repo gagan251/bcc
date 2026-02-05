@@ -2,16 +2,9 @@ import { Button } from '@/components/ui/button';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import Image from 'next/image';
 import Link from 'next/link';
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
 
 export function NewHero() {
-  const carouselImages = PlaceHolderImages.filter(img => img.id.startsWith('hero-carousel-'));
+  const heroImage = PlaceHolderImages.find(img => img.id === 'glass-hero-image');
 
   return (
     <section id="home" className="particle-glow relative py-20 md:py-32">
@@ -31,31 +24,18 @@ export function NewHero() {
           <div className="relative flex items-center justify-center">
             <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-purple-500/10 rounded-full blur-3xl -z-10 animate-pulse-slow"></div>
             
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-4 shadow-2xl backdrop-blur-lg">
-                <Carousel
-                opts={{
-                    loop: true,
-                }}
-                className="w-full max-w-[300px] relative"
-                >
-                <CarouselContent>
-                    {carouselImages.map((image, index) => (
-                    <CarouselItem key={index}>
-                        <Image
-                            src={image.imageUrl}
-                            alt={image.description}
-                            width={300}
-                            height={450}
-                            className="rounded-lg object-cover opacity-80"
-                            data-ai-hint={image.imageHint}
-                            priority={index === 0}
-                        />
-                    </CarouselItem>
-                    ))}
-                </CarouselContent>
-                <CarouselPrevious className="absolute left-2 top-1/2 -translate-y-1/2 z-10 h-9 w-9 rounded-full bg-black/30 text-white hover:bg-black/50 border-none transition-colors" />
-                <CarouselNext className="absolute right-2 top-1/2 -translate-y-1/2 z-10 h-9 w-9 rounded-full bg-black/30 text-white hover:bg-black/50 border-none transition-colors" />
-                </Carousel>
+            <div className="rounded-2xl border border-white/10 p-4 shadow-2xl">
+                {heroImage && (
+                  <Image
+                      src={heroImage.imageUrl}
+                      alt={heroImage.description}
+                      width={300}
+                      height={450}
+                      className="rounded-lg object-cover opacity-80"
+                      data-ai-hint={heroImage.imageHint}
+                      priority
+                  />
+                )}
             </div>
           </div>
         </div>
