@@ -49,24 +49,23 @@ export default function ProfilePage() {
   function getCroppedImg(
     image: HTMLImageElement,
     crop: PixelCrop,
+    outputWidth = 512,
+    outputHeight = 512
   ): Promise<string> {
     const canvas = document.createElement('canvas');
-    const scaleX = image.naturalWidth / image.width;
-    const scaleY = image.naturalHeight / image.height;
-    canvas.width = crop.width;
-    canvas.height = crop.height;
+    canvas.width = outputWidth;
+    canvas.height = outputHeight;
     const ctx = canvas.getContext('2d');
-
+  
     if (!ctx) {
       return Promise.reject(new Error('Could not get canvas context'));
     }
-
-    const pixelRatio = window.devicePixelRatio;
-    canvas.width = crop.width * pixelRatio;
-    canvas.height = crop.height * pixelRatio;
-    ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+  
+    const scaleX = image.naturalWidth / image.width;
+    const scaleY = image.naturalHeight / image.height;
+    
     ctx.imageSmoothingQuality = 'high';
-
+  
     ctx.drawImage(
       image,
       crop.x * scaleX,
@@ -75,10 +74,10 @@ export default function ProfilePage() {
       crop.height * scaleY,
       0,
       0,
-      crop.width,
-      crop.height,
+      outputWidth,
+      outputHeight
     );
-
+  
     return new Promise((resolve) => {
       resolve(canvas.toDataURL('image/jpeg', 0.9));
     });
@@ -143,6 +142,7 @@ export default function ProfilePage() {
         const dataUrl = await getCroppedImg(imgRef.current, completedCrop);
         
         await updateProfile(auth.currentUser, { photoURL: dataUrl });
+        await auth.currentUser.reload();
         errorEmitter.emit('profile-updated');
 
         toast({
@@ -153,10 +153,14 @@ export default function ProfilePage() {
         setImgSrc('');
     } catch (error: any) {
         console.error('Error updating profile picture:', error);
+        let description = 'There was an error uploading your cropped picture.';
+        if (error.message?.includes('string matching the regular expression')) {
+            description = 'The generated image is too large. Please try a smaller crop area or image.'
+        }
         toast({
           variant: 'destructive',
           title: 'Upload Failed',
-          description: 'There was an error uploading your cropped picture.',
+          description: description,
         });
     } finally {
         setIsUploading(false);
