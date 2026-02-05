@@ -1,12 +1,12 @@
 
 'use client';
 
-import { useMemo } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { useFirestore, useCollection, useMemoFirebase, addDocumentNonBlocking } from '@/firebase';
-import { collection } from 'firebase/firestore';
+import { useFirestore, useCollection, useMemoFirebase, FirestorePermissionError, errorEmitter } from '@/firebase';
+import { collection, addDoc } from 'firebase/firestore';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -28,32 +28,44 @@ type Course = z.infer<typeof courseFormSchema> & { id: string };
 function AddCourseForm() {
   const firestore = useFirestore();
   const { toast } = useToast();
-  const [isLoading, setIsLoading] = useMemo(() => [false, (v: boolean) => {}], []);
+  const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm<z.infer<typeof courseFormSchema>>({
     resolver: zodResolver(courseFormSchema),
     defaultValues: { name: "", description: "" },
   });
 
-  async function onSubmit(values: z.infer<typeof courseFormSchema>) {
+  function onSubmit(values: z.infer<typeof courseFormSchema>) {
     if (!firestore) {
       toast({ variant: "destructive", title: "Firestore not initialized" });
       return;
     }
     setIsLoading(true);
 
-    try {
-      const coursesCollection = collection(firestore, 'courses');
-      await addDocumentNonBlocking(coursesCollection, values);
-      
-      toast({ title: "Course Added", description: `"${values.name}" has been created.` });
-      form.reset();
-    } catch (error) {
-      console.error("Error adding course: ", error);
-      toast({ variant: "destructive", title: "Submission Error", description: "Could not add the course." });
-    } finally {
-      setIsLoading(false);
-    }
+    const coursesCollection = collection(firestore, 'courses');
+    
+    addDoc(coursesCollection, values)
+      .then(() => {
+        toast({ title: "Course Added", description: `"${values.name}" has been created.` });
+        form.reset();
+      })
+      .catch((serverError) => {
+        console.error("Error adding course: ", serverError);
+        
+        // This is for the Next.js error overlay in dev mode
+        const permissionError = new FirestorePermissionError({
+          path: coursesCollection.path,
+          operation: 'create',
+          requestResourceData: values,
+        });
+        errorEmitter.emit('permission-error', permissionError);
+
+        // This is for the user-facing toast
+        toast({ variant: "destructive", title: "Submission Error", description: "Could not add the course." });
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
   }
 
   return (
