@@ -73,7 +73,7 @@ export function AddReview() {
   return (
     <section id="testimonials" className="container mx-auto">
       <div className="mb-12 text-center">
-        <h2 className="font-headline text-3xl font-extrabold tracking-tight sm:text-4xl">
+        <h2 className="font-sans text-3xl font-extrabold tracking-tight sm:text-4xl">
           Leave a Testimonial
         </h2>
         <p className="mt-4 text-lg text-muted-foreground">

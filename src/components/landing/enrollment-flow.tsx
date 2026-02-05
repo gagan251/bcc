@@ -28,7 +28,7 @@ export function EnrollmentFlow() {
     <section className="enrollment-bg py-16 sm:py-24">
       <div className="container mx-auto">
         <div className="mb-16 text-center">
-          <h2 className="font-headline text-3xl font-extrabold tracking-tight sm:text-4xl text-white">
+          <h2 className="font-sans text-3xl font-extrabold tracking-tight sm:text-4xl text-white">
             Course Enrollment Flow
           </h2>
           <p className="mt-4 text-lg text-white/80">
