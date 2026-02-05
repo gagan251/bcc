@@ -9,8 +9,8 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet';
 import { Bell, Menu, LogOut, LayoutDashboard } from 'lucide-react';
-import { useUser } from '@/firebase';
-import { signOut, getAuth } from 'firebase/auth';
+import { useUser, useAuth } from '@/firebase';
+import { signOut } from 'firebase/auth';
 import { useRouter, usePathname } from 'next/navigation';
 import {
   DropdownMenu,
@@ -35,6 +35,7 @@ const navLinks = [
 
 export function Header() {
   const { user, isUserLoading } = useUser();
+  const auth = useAuth();
   const router = useRouter();
   const pathname = usePathname();
   const [isScrolled, setIsScrolled] = useState(false);
@@ -58,7 +59,7 @@ export function Header() {
 
   const handleSignOut = async () => {
     try {
-      await signOut(getAuth());
+      await signOut(auth);
       router.push('/');
     } catch (error) {
       console.error('Error signing out: ', error);

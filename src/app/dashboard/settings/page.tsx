@@ -5,8 +5,8 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { useTheme } from 'next-themes';
-import { useUser, errorEmitter } from '@/firebase';
-import { getAuth, updateProfile, sendPasswordResetEmail, deleteUser } from 'firebase/auth';
+import { useUser, errorEmitter, useAuth } from '@/firebase';
+import { updateProfile, sendPasswordResetEmail, deleteUser } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
 
 import { Button } from '@/components/ui/button';
@@ -26,7 +26,7 @@ const profileFormSchema = z.object({
 export default function SettingsPage() {
   const { theme, setTheme } = useTheme();
   const { user } = useUser();
-  const auth = getAuth();
+  const auth = useAuth();
   const router = useRouter();
   const { toast } = useToast();
   const [isSavingName, setIsSavingName] = useState(false);
