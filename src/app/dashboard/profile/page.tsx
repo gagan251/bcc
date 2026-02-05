@@ -1,8 +1,9 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { useUser, useAuth, errorEmitter } from '@/firebase';
+import { useUser, useAuth, errorEmitter, useStorage } from '@/firebase';
 import { updateProfile } from 'firebase/auth';
+import { ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -32,6 +33,7 @@ import 'react-image-crop/dist/ReactCrop.css'
 export default function ProfilePage() {
   const { user } = useUser();
   const auth = useAuth();
+  const storage = useStorage();
   const { toast } = useToast();
 
   const [imgSrc, setImgSrc] = useState('');
@@ -55,12 +57,12 @@ export default function ProfilePage() {
     return email.charAt(0).toUpperCase();
   };
 
-  function getCroppedImg(
+  function getCroppedBlob(
     image: HTMLImageElement,
     crop: PixelCrop,
     outputWidth = 512,
-    outputHeight = 512
-  ): Promise<string> {
+    outputHeight = 512,
+  ): Promise<Blob> {
     const canvas = document.createElement('canvas');
     canvas.width = outputWidth;
     canvas.height = outputHeight;
@@ -87,10 +89,17 @@ export default function ProfilePage() {
       outputHeight
     );
   
-    return new Promise((resolve) => {
-      resolve(canvas.toDataURL('image/jpeg', 0.9));
+    return new Promise((resolve, reject) => {
+      canvas.toBlob((blob) => {
+        if (!blob) {
+          reject(new Error('Canvas is empty'));
+          return;
+        }
+        resolve(blob);
+      }, 'image/jpeg', 0.9);
     });
   }
+  
 
   function onSelectFile(e: React.ChangeEvent<HTMLInputElement>) {
     if (e.target.files && e.target.files.length > 0) {
@@ -113,7 +122,7 @@ export default function ProfilePage() {
       }
 
       setCrop(undefined) // Makes crop preview update between images.
-      setImgSrc(URL.createObjectURL(file)); // Use object URL for memory efficiency
+      setImgSrc(URL.createObjectURL(file));
     }
   }
 
@@ -140,14 +149,28 @@ export default function ProfilePage() {
         toast({ variant: 'destructive', title: 'Crop Error', description: 'Please select and crop an image first.' });
         return;
     }
-    if(!auth.currentUser) return;
+    if(!auth.currentUser || !storage) {
+        toast({ variant: 'destructive', title: 'Error', description: 'User not logged in or storage not available.' });
+        return
+    };
 
     setIsUploading(true);
     try {
-        const dataUrl = await getCroppedImg(imgRef.current, completedCrop);
+        const imageBlob = await getCroppedBlob(imgRef.current, completedCrop);
         
-        await updateProfile(auth.currentUser, { photoURL: dataUrl });
+        const filePath = `users/${auth.currentUser.uid}/profile.jpg`;
+        const fileRef = storageRef(storage, filePath);
+
+        const metadata = { contentType: 'image/jpeg' };
+        const uploadResult = await uploadBytes(fileRef, imageBlob, metadata);
+        
+        const downloadUrl = await getDownloadURL(uploadResult.ref);
+        
+        await updateProfile(auth.currentUser, { photoURL: downloadUrl });
+        
+        // This is crucial to make sure the user object in the auth state is updated
         await auth.currentUser.reload();
+        // This notifies other components (like header/sidebar) that use `useUser`
         errorEmitter.emit('profile-updated');
 
         toast({
@@ -158,14 +181,10 @@ export default function ProfilePage() {
         setImgSrc('');
     } catch (error: any) {
         console.error('Error updating profile picture:', error);
-        let description = 'There was an error uploading your cropped picture.';
-        if (error.message?.includes('string matching the regular expression')) {
-            description = 'The generated image is too large. Please try a smaller crop area or image.'
-        }
         toast({
           variant: 'destructive',
           title: 'Upload Failed',
-          description: description,
+          description: error.message || 'An unexpected error occurred during upload.',
         });
     } finally {
         setIsUploading(false);
