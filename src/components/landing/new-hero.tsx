@@ -24,14 +24,14 @@ export function NewHero() {
           <div className="relative flex items-center justify-center">
             <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-purple-500/10 rounded-full blur-3xl -z-10 animate-pulse-slow"></div>
             
-            <div className="rounded-2xl border border-white/10 p-4 shadow-2xl">
+            <div className="rounded-2xl p-4">
                 {heroImage && (
                   <Image
                       src={heroImage.imageUrl}
                       alt={heroImage.description}
                       width={300}
                       height={450}
-                      className="rounded-lg object-cover opacity-80"
+                      className="rounded-lg object-cover"
                       data-ai-hint={heroImage.imageHint}
                       priority
                   />
