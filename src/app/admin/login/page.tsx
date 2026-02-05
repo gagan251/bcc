@@ -32,7 +32,15 @@ export default function AdminLoginPage() {
                 <Input id="email" type="email" placeholder="admin@example.com" required />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="password">Password</Label>
+                  <Link
+                    href="/admin/forgot-password"
+                    className="text-sm font-medium text-primary underline-offset-4 hover:underline"
+                  >
+                    Forgot Password?
+                  </Link>
+                </div>
                 <Input id="password" type="password" required />
               </div>
               <Button type="submit" className="w-full">
