@@ -18,7 +18,7 @@ const steps = [
   },
   {
     icon: LayoutDashboard,
-    title: 'Access Dashboard',
+    title: 'Start Learning',
     description: 'Start learning immediately!',
   },
 ];
