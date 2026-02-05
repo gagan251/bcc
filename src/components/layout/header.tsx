@@ -8,7 +8,7 @@ import {
   SheetContent,
   SheetTrigger,
 } from '@/components/ui/sheet';
-import { Bell, Menu, LogOut, LayoutDashboard } from 'lucide-react';
+import { Bell, Menu, LogOut, LayoutDashboard, Moon, Sun } from 'lucide-react';
 import { useUser, useAuth } from '@/firebase';
 import { signOut } from 'firebase/auth';
 import { useRouter, usePathname } from 'next/navigation';
@@ -24,6 +24,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { SiteLogo } from '../site-logo';
 import { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
+import { useTheme } from 'next-themes';
 
 const navLinks = [
   { href: '#home', label: 'Home' },
@@ -39,6 +40,7 @@ export function Header() {
   const router = useRouter();
   const pathname = usePathname();
   const [isScrolled, setIsScrolled] = useState(false);
+  const { setTheme, theme } = useTheme();
 
   const isHomePage = pathname === '/';
 
@@ -166,6 +168,17 @@ export function Header() {
                 </Button>
             </div>
           )}
+
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
+            className={cn("h-9 w-9", useTransparentHeader ? 'text-white hover:bg-white/10 hover:text-white' : '')}
+          >
+            <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+            <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+            <span className="sr-only">Toggle theme</span>
+          </Button>
           
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
