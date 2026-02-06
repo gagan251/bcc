@@ -55,7 +55,7 @@ export function Courses() {
 
   return (
     <section id="courses" className="container mx-auto">
-      <div className="mb-12 text-center">
+      <div className="mb-12 text-center opacity-0 animate-fade-in-up">
         <h2 className="font-sans text-3xl font-extrabold tracking-tight sm:text-4xl">
           Courses
         </h2>
@@ -68,12 +68,13 @@ export function Courses() {
         renderSkeletons()
       ) : courses && courses.length > 0 ? (
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {courses.map((course) => {
+          {courses.map((course, index) => {
             const enrollHref = user ? `/enroll/${course.id}` : '/signup';
             return (
               <Card
                 key={course.id}
-                className="flex flex-col overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
+                className="flex flex-col overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 opacity-0 animate-fade-in-up"
+                style={{ animationDelay: `${100 * index}ms` }}
               >
                 <CardHeader>
                   <CardTitle className="text-xl">{course.name}</CardTitle>
@@ -84,7 +85,7 @@ export function Courses() {
                   </CardDescription>
                 </CardContent>
                 <CardFooter>
-                  <Button className="w-full" asChild>
+                  <Button className="w-full transition-transform duration-200 hover:scale-[1.02] active:scale-100" asChild>
                     <Link href={enrollHref}>Enroll Now</Link>
                   </Button>
                 </CardFooter>

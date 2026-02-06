@@ -2,6 +2,47 @@
 @tailwind components;
 @tailwind utilities;
 
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+    scale: 0.98;
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    scale: 1;
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes slow-rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes twinkle {
+  0%, 100% {
+    opacity: 0.05;
+  }
+  50% {
+    opacity: 0.1;
+  }
+}
+
+
 @layer base {
   :root {
     --background: 210 17% 98%;
@@ -83,6 +124,35 @@
   }
 }
 
+@layer utilities {
+    .animate-fade-in-up {
+        animation: fade-in-up 0.7s ease-out forwards;
+    }
+    .animate-float {
+        animation: float 6s ease-in-out infinite;
+    }
+    .animation-delay-100 { animation-delay: 100ms; }
+    .animation-delay-200 { animation-delay: 200ms; }
+    .animation-delay-300 { animation-delay: 300ms; }
+    .animation-delay-400 { animation-delay: 400ms; }
+    .animation-delay-500 { animation-delay: 500ms; }
+    .animation-delay-700 { animation-delay: 700ms; }
+
+    @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+            scroll-behavior: auto !important;
+        }
+        .animate-float {
+            animation: none;
+        }
+    }
+}
+
 @keyframes sun-pulse {
   0%, 100% {
     transform: scale(1);
@@ -112,7 +182,7 @@
   border-radius: 50%;
   box-shadow: 0 0 50px 20px #FFD700;
   opacity: 0.9;
-  animation: sun-pulse 6s infinite ease-in-out;
+  animation: sun-pulse 6s infinite ease-in-out, slow-rotate 60s linear infinite;
 }
 
 .hero-section-particles::before {
@@ -148,8 +218,8 @@
     ),
     radial-gradient(circle, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
   background-size: 40px 40px, 80px 80px;
-  animation: particle-animation 20s linear infinite;
-  will-change: transform;
+  animation: particle-animation 40s linear infinite, twinkle 8s ease-in-out infinite;
+  will-change: transform, opacity;
 }
 
 
@@ -177,7 +247,7 @@
     background-color: hsl(var(--primary));
     box-shadow: 0 0 8px hsl(var(--primary) / 0.7);
     transform-origin: left;
-    animation: scale-in-x 1.5s 0.2s cubic-bezier(0.5, 1, 0.5, 1) forwards;
+    animation: scale-in-x 1.5s 0.8s cubic-bezier(0.5, 1, 0.5, 1) forwards;
     opacity: 0;
   }
 }
@@ -200,7 +270,7 @@
     background-color: hsl(var(--primary));
     box-shadow: 0 0 8px hsl(var(--primary) / 0.7);
     transform-origin: top;
-    animation: scale-in-y 1.5s 0.2s cubic-bezier(0.5, 1, 0.5, 1) forwards;
+    animation: scale-in-y 1.5s 0.8s cubic-bezier(0.5, 1, 0.5, 1) forwards;
     opacity: 0;
     height: calc(100% - 10rem);
   }
