@@ -1,8 +1,11 @@
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import Image from 'next/image';
+import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 export function NewHero() {
+  const heroImage = PlaceHolderImages.find((img) => img.id === 'hero-image');
+  
   return (
     <section id="home" className="hero-section hero-section-particles py-20 md:py-28 overflow-hidden">
       <div className="hero-section-sun" />
@@ -26,15 +29,17 @@ export function NewHero() {
           {/* Right Column: Image for Light Mode */}
           <div className="relative hidden md:block opacity-0 animate-fade-in-up animation-delay-500">
             <div className="dark:hidden">
-              <Image
-                src="https://images.unsplash.com/photo-1451226428352-78087c5338a0?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                alt="A classic typewriter on a desk, representing typing skills"
-                width={600}
-                height={600}
-                className="object-contain animate-float"
-                priority
-                data-ai-hint="typewriter desk"
-              />
+              {heroImage && (
+                <Image
+                  src={heroImage.imageUrl}
+                  alt={heroImage.description}
+                  width={600}
+                  height={600}
+                  className="object-contain animate-float"
+                  priority
+                  data-ai-hint={heroImage.imageHint}
+                />
+              )}
             </div>
           </div>
         </div>
