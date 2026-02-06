@@ -16,18 +16,6 @@ export default function ClientLayoutWrapper({ children }: { children: React.Reac
   return (
     <>
       {loading && <PageLoader />}
-      {/* 
-        We conditionally apply the 'overflow: hidden' style while loading.
-        Once 'loading' becomes false, this entire block (including the style) is removed,
-        restoring the default scroll behavior.
-      */}
-      {loading && (
-        <style jsx global>{`
-          body {
-            overflow: hidden;
-          }
-        `}</style>
-      )}
       {children}
     </>
   );
