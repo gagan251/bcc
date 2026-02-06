@@ -5,6 +5,7 @@ import { Toaster } from '@/components/ui/toaster';
 import { cn } from '@/lib/utils';
 import { FirebaseClientProvider } from '@/firebase';
 import { ThemeProvider } from '@/components/theme-provider';
+import NextTopLoader from 'nextjs-toploader';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 
@@ -26,6 +27,13 @@ export default function RootLayout({
           inter.variable
         )}
       >
+        <NextTopLoader
+          color="hsl(var(--primary))"
+          height={3}
+          showSpinner={false}
+          easing="ease"
+          speed={200}
+        />
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
