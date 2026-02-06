@@ -12,21 +12,18 @@ import {
   MessageSquare,
   Settings,
   ShieldCheck,
-  Users,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { signOut } from 'firebase/auth';
-import { SiteLogo } from '../site-logo';
 import { cn } from '@/lib/utils';
 
 const navLinks = [
   { href: '/admin/dashboard', label: 'Dashboard', icon: Gauge },
-  { href: '/admin/courses', label: 'Manage Courses', icon: FileText },
-  { href: '#', label: 'Live Classes', icon: BookOpen, disabled: true },
-  { href: '#', label: 'Recordings', icon: Library, disabled: true },
-  { href: '#', label: 'Students', icon: Users, disabled: true },
-  { href: '#', label: 'Reviews', icon: MessageSquare, disabled: true },
+  { href: '/admin/courses', label: 'Courses', icon: FileText },
+  { href: '/admin/live-classes', label: 'Live Classes', icon: BookOpen },
+  { href: '/admin/library', label: 'Library', icon: Library },
+  { href: '/admin/reviews', label: 'Reviews', icon: MessageSquare },
 ];
 
 export function AdminSidebar() {
@@ -62,7 +59,6 @@ export function AdminSidebar() {
               key={link.href}
               asChild
               variant="ghost"
-              disabled={link.disabled}
               className={cn(
                 "justify-start gap-3 px-3 py-6 text-sm h-auto transition-all duration-200",
                 isActive 

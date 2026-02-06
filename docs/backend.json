@@ -230,6 +230,36 @@
         "feedback",
         "createdAt"
       ]
+    },
+    "LiveClass": {
+      "title": "Live Class",
+      "description": "Represents a scheduled live class session.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique identifier for the live class." },
+        "title": { "type": "string", "description": "Title of the live class." },
+        "classTime": { "type": "string", "format": "date-time", "description": "Scheduled date and time for the class." },
+        "instructor": { "type": "string", "description": "Name of the instructor conducting the class." },
+        "link": { "type": "string", "description": "URL for the live class (e.g., Zoom, Google Meet)." },
+        "status": { "type": "string", "enum": ["Upcoming", "Live", "Completed"], "description": "Current status of the class." }
+      },
+      "required": ["id", "title", "classTime", "link", "status"]
+    },
+    "LibraryFile": {
+      "title": "Library File",
+      "description": "Represents a file uploaded to the content library.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique identifier for the library file." },
+        "title": { "type": "string", "description": "Title of the file." },
+        "description": { "type": "string", "description": "A brief description of the file's content." },
+        "category": { "type": "string", "enum": ["Typing", "Stenography", "General"], "description": "The category the file belongs to." },
+        "fileUrl": { "type": "string", "description": "The public URL to access the uploaded file in Firebase Storage." },
+        "fileName": { "type": "string", "description": "The original name of the uploaded file." },
+        "fileType": { "type": "string", "description": "The MIME type of the file." },
+        "uploadedAt": { "type": "string", "format": "date-time", "description": "Timestamp when the file was uploaded." }
+      },
+      "required": ["id", "title", "category", "fileUrl", "fileName", "uploadedAt"]
     }
   },
   "auth": {
@@ -366,8 +396,26 @@
             }
           ]
         }
+      },
+      {
+        "path": "/liveClasses/{classId}",
+        "definition": {
+          "entityName": "LiveClass",
+          "schema": { "$ref": "#/backend/entities/LiveClass" },
+          "description": "Stores all live class sessions.",
+          "params": [{ "name": "classId", "description": "Unique identifier for the live class." }]
+        }
+      },
+      {
+        "path": "/library/{fileId}",
+        "definition": {
+          "entityName": "LibraryFile",
+          "schema": { "$ref": "#/backend/entities/LibraryFile" },
+          "description": "Stores all uploaded library files and their metadata.",
+          "params": [{ "name": "fileId", "description": "Unique identifier for the library file." }]
+        }
       }
     ],
-    "reasoning": "The Firestore data structure is designed to support the Bharat Learning Hub platform, focusing on user authentication, course management, and student progress tracking. The structure prioritizes authorization independence and adheres to best practices for security and scalability.\n\n*   **User Data:** User profiles are stored in `/users/{userId}`. This path-based ownership model provides excellent security and simplifies rules. Each user document contains essential information (email, displayName, role).\n*   **Course Data:** Courses are stored in the `/courses/{courseId}` collection. This flat collection structure is suitable for managing course information. \n*   **Enrollment Data:** Enrollments are managed under `/users/{userId}/enrollments/{enrollmentId}`. This hierarchical structure enables efficient querying of a user's enrollments.\n*   **Lesson Data:** Lessons, which are subcollections of Courses, are stored in `/courses/{courseId}/lessons/{lessonId}`. This structure is easy to query lessons of the course.\n*   **Test Data:** Tests, which are subcollections of Courses, are stored in `/courses/{courseId}/tests/{testId}`. This structure is easy to query tests of the course.\n*   **Test Result Data:** Test Results, which are subcollections of Users, are stored in `/users/{userId}/testResults/{testResultId}`. This structure makes querying test results for a given user simple.\n*   **Review Data:** User-submitted reviews are stored in the top-level `/reviews` collection. This allows anonymous or authenticated users to submit feedback without needing complex user-specific permissions. Access to read these reviews should be limited to admin roles.\n\n**Authorization Independence:**\n\n*   No `get()` calls are necessary in security rules because the structure uses path-based ownership (e.g., `/users/{userId}`) and subcollections to associate data with users.\n\n**QAPs Support:**\n\n*   The path-based ownership for user-specific data enables secure `list` operations. Rules can easily restrict access to a user's own data without filtering based on document content. The segregation of courses and lessons ensures that only authorized users can access course content."
+    "reasoning": "The Firestore data structure is designed to support the Bharat Learning Hub platform, focusing on user authentication, course management, and student progress tracking. The structure prioritizes authorization independence and adheres to best practices for security and scalability.\n\n*   **User Data:** User profiles are stored in `/users/{userId}`. This path-based ownership model provides excellent security and simplifies rules. Each user document contains essential information (email, displayName, role).\n*   **Course Data:** Courses are stored in the `/courses/{courseId}` collection. This flat collection structure is suitable for managing course information. \n*   **Enrollment Data:** Enrollments are managed under `/users/{userId}/enrollments/{enrollmentId}`. This hierarchical structure enables efficient querying of a user's enrollments.\n*   **Lesson Data:** Lessons, which are subcollections of Courses, are stored in `/courses/{courseId}/lessons/{lessonId}`. This structure is easy to query lessons of the course.\n*   **Test Data:** Tests, which are subcollections of Courses, are stored in `/courses/{courseId}/tests/{testId}`. This structure is easy to query tests of the course.\n*   **Test Result Data:** Test Results, which are subcollections of Users, are stored in `/users/{userId}/testResults/{testResultId}`. This structure makes querying test results for a given user simple.\n*   **Review Data:** User-submitted reviews are stored in the top-level `/reviews` collection. This allows anonymous or authenticated users to submit feedback without needing complex user-specific permissions. Access to read these reviews should be limited to admin roles.\n*   **Live Classes & Library:** The new `/liveClasses` and `/library` collections are added at the root level. This is appropriate for globally managed content that is not user-specific. Access is controlled at the collection level, restricted to admins for all read/write operations, ensuring only authorized personnel can manage this content.\n\n**Authorization Independence:**\n\n*   No `get()` calls are necessary in security rules because the structure uses path-based ownership (e.g., `/users/{userId}`) and subcollections to associate data with users.\n\n**QAPs Support:**\n\n*   The path-based ownership for user-specific data enables secure `list` operations. Rules can easily restrict access to a user's own data without filtering based on document content. The segregation of courses and lessons ensures that only authorized users can access course content."
   }
 }

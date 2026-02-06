@@ -22,6 +22,8 @@
  * - Public Course Listing: The main `/courses` collection is public to allow browsing
  *   by potential customers. Write operations are restricted to admins. Course content
  *   (lessons, tests) is restricted to signed-in users.
+ * - Admin-Only Content: The `/liveClasses` and `/library` collections are restricted
+ *   to admins for all read and write operations.
  * - Admin-Readable Reviews: The `/reviews` collection allows any client to write
  *   a new document. Read access is restricted to users with an 'admin' role.
  *
@@ -202,6 +204,28 @@ service cloud.firestore {
         allow list: if isSignedIn();
         allow create, update, delete: if isAdmin();
       }
+    }
+
+    // ------------------------------------------------------------------------
+    // Admin-Only Content Rules
+    // ------------------------------------------------------------------------
+    
+    /**
+     * @description Controls access to live class information.
+     * @path /liveClasses/{classId}
+     * @allow (read, write) Only admins can manage live classes.
+     */
+    match /liveClasses/{classId} {
+      allow read, write: if isAdmin();
+    }
+    
+    /**
+     * @description Controls access to the content library.
+     * @path /library/{fileId}
+     * @allow (read, write) Only admins can manage the library.
+     */
+    match /library/{fileId} {
+      allow read, write: if isAdmin();
     }
   }
 }
