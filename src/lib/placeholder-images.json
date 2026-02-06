@@ -2,9 +2,9 @@
   "placeholderImages": [
     {
       "id": "hero-image",
-      "description": "A person typing on a vintage typewriter.",
-      "imageUrl": "https://i.postimg.cc/tTtnQLXH/Whisk-8332559b4609630950c4fb98ea12c7a6dr.jpg",
-      "imageHint": "person typewriter"
+      "description": "Vintage typewriter with a transparent background",
+      "imageUrl": "https://i.postimg.cc/VvwKRQNr/Whisk-8332559b4609630950c4fb98ea12c7a6dr-removebg-preview-(1).png",
+      "imageHint": "vintage typewriter"
     },
     {
       "id": "dark-mode-bg",
