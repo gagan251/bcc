@@ -1,20 +1,12 @@
 'use client';
 
-import NextTopLoader from 'nextjs-toploader';
+import { Loader2 } from 'lucide-react';
 
 const PageLoader = () => {
   return (
-    <NextTopLoader
-      color="#3b82f6"
-      initialPosition={0.08}
-      crawlSpeed={200}
-      height={3}
-      crawl={true}
-      showSpinner={false}
-      easing="ease"
-      speed={200}
-      shadow="0 0 10px #3b82f6, 0 0 5px #3b82f6"
-    />
+    <div className="flex min-h-screen items-center justify-center bg-background">
+      <Loader2 className="h-16 w-16 animate-spin text-primary" />
+    </div>
   );
 };
 
