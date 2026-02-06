@@ -7,28 +7,27 @@ export default function ClientLayoutWrapper({ children }: { children: React.Reac
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const handleLoad = () => {
-      document.body.style.overflow = '';
-      // Small delay to prevent flash of content
-      setTimeout(() => {
-        setLoading(false);
-      }, 200); 
-    };
-
-    if (typeof window !== 'undefined') {
-      document.body.style.overflow = 'hidden';
-      if (document.readyState === 'complete') {
-          handleLoad();
-      } else {
-          window.addEventListener('load', handleLoad);
-          return () => window.removeEventListener('load', handleLoad);
-      }
-    }
+    // This effect runs once on the client when the main app shell is ready.
+    // Hiding the loader here is more reliable than waiting for the window 'load' event,
+    // which can be unpredictable with Next.js's streaming.
+    setLoading(false);
   }, []);
 
   return (
     <>
       {loading && <PageLoader />}
+      {/* 
+        We conditionally apply the 'overflow: hidden' style while loading.
+        Once 'loading' becomes false, this entire block (including the style) is removed,
+        restoring the default scroll behavior.
+      */}
+      {loading && (
+        <style jsx global>{`
+          body {
+            overflow: hidden;
+          }
+        `}</style>
+      )}
       {children}
     </>
   );
