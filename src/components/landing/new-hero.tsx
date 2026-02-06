@@ -1,12 +1,8 @@
 import { Button } from '@/components/ui/button';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
-import Image from 'next/image';
 import Link from 'next/link';
 import { LoginCard } from './login-card';
 
 export function NewHero() {
-  const heroImage = PlaceHolderImages.find(img => img.id === 'hero-image');
-
   return (
     <section id="home" className="hero-section hero-section-particles py-20 md:py-32 overflow-hidden">
       <div className="hero-section-sun" />
@@ -15,7 +11,6 @@ export function NewHero() {
           
           {/* Left Column: Contains text */}
           <div className="lg:col-span-7 space-y-8 text-center md:text-left">
-            {/* Text block */}
             <div className="space-y-6">
               <h1 className="text-4xl font-extrabold tracking-tight text-foreground dark:text-white sm:text-5xl md:text-6xl opacity-0 animate-fade-in-up">
                 Unlock Your Potential in Typing & Stenography
