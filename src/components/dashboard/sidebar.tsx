@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useUser, useAuth } from '@/firebase';
@@ -7,6 +8,7 @@ import {
   CheckCircle,
   FileText,
   Gauge,
+  Home,
   LogOut,
   Settings,
   User as UserIcon,
@@ -25,6 +27,7 @@ import { signOut } from 'firebase/auth';
 import { SiteLogo } from '../site-logo';
 
 const navLinks = [
+  { href: '/', label: 'Home', icon: Home },
   { href: '/dashboard', label: 'Dashboard', icon: Gauge },
   { href: '/dashboard/profile', label: 'Profile', icon: UserIcon },
   { href: '/dashboard/typing', label: 'Typing Practice', icon: SiteLogo },
