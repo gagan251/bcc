@@ -70,7 +70,7 @@ export function YourCourses() {
           <h2 className="text-2xl font-bold tracking-tight mb-6">Your Courses</h2>
             <Card className="text-center p-8 bg-card/80 border-dashed border-border/50">
                 <CardContent className="flex flex-col items-center">
-                    <div className="flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-primary/10 to-primary/20 mb-6 relative">
+                    <div className="flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-primary/10 to-primary/20 mb-6 relative animate-float">
                         <GraduationCap className="h-10 w-10 text-primary" />
                     </div>
                     <h3 className="text-xl font-semibold text-foreground">You haven’t enrolled yet</h3>
@@ -111,7 +111,7 @@ export function YourCourses() {
       ) : (
         <Card className="text-center p-8 bg-card/80 border-dashed border-border/50">
             <CardContent className="flex flex-col items-center">
-                <div className="flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-primary/10 to-primary/20 mb-6 relative">
+                <div className="flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-primary/10 to-primary/20 mb-6 relative animate-float">
                     <GraduationCap className="h-10 w-10 text-primary" />
                 </div>
                 <h3 className="text-xl font-semibold text-foreground">You haven’t enrolled yet</h3>

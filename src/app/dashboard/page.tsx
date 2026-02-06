@@ -15,7 +15,7 @@ export default function StudentDashboardPage() {
 
   return (
     <div className="space-y-8 animate-fade-in-up">
-      <header className="overflow-hidden rounded-xl border border-border/20 bg-card shadow-lg">
+      <header className="overflow-hidden rounded-xl border bg-card shadow-lg">
         <div className="bg-gradient-to-r from-primary/10 to-secondary/10 p-6 md:p-8">
             <div className="flex flex-col-reverse items-start justify-between gap-4 md:flex-row">
                 <div className="space-y-2">

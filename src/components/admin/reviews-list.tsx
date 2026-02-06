@@ -2,12 +2,15 @@
 
 import { useMemoFirebase, useCollection, useFirestore } from '@/firebase';
 import { collection } from 'firebase/firestore';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Star, MessageSquare, User, Calendar } from 'lucide-react';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Star, MessageSquare, User, Calendar, Check, EyeOff } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Terminal } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
+import { Button } from '../ui/button';
+import { useToast } from '@/hooks/use-toast';
+import { Badge } from '../ui/badge';
 
 type Review = {
     id: string;
@@ -21,11 +24,13 @@ type Review = {
 };
 
 function ReviewCard({ review }: { review: Review }) {
+    const { toast } = useToast();
+
     const renderStars = () => {
         return Array(5).fill(0).map((_, i) => (
             <Star
                 key={i}
-                className={`h-5 w-5 ${i < review.rating ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'}`}
+                className={`h-5 w-5 ${i < review.rating ? 'text-amber-400 fill-amber-400' : 'text-gray-500'}`}
             />
         ));
     };
@@ -36,7 +41,7 @@ function ReviewCard({ review }: { review: Review }) {
 
 
     return (
-        <Card>
+        <Card className="bg-card/50">
             <CardHeader>
                 <div className="flex justify-between items-start">
                     <div>
@@ -60,6 +65,14 @@ function ReviewCard({ review }: { review: Review }) {
                     <span>{review.feedback}</span>
                 </p>
             </CardContent>
+            <CardFooter className="justify-end gap-2">
+                <Button variant="ghost" size="sm" onClick={() => toast({ title: "Coming Soon!", description: "This feature is under development."})}>
+                    <Check className="h-4 w-4 mr-2" /> Approve
+                </Button>
+                <Button variant="ghost" size="sm" onClick={() => toast({ title: "Coming Soon!", description: "This feature is under development."})}>
+                    <EyeOff className="h-4 w-4 mr-2" /> Hide
+                </Button>
+            </CardFooter>
         </Card>
     );
 }
@@ -73,6 +86,11 @@ export function ReviewsList() {
     }, [firestore]);
 
     const { data: reviews, isLoading, error } = useCollection<Review>(reviewsQuery);
+
+    const totalReviews = reviews?.length ?? 0;
+    const averageRating = reviews && reviews.length > 0
+        ? reviews.reduce((acc, r) => acc + r.rating, 0) / reviews.length
+        : 0;
     
     if (isLoading) {
         return (
@@ -118,10 +136,25 @@ export function ReviewsList() {
     }
 
     return (
-        <div className="space-y-4">
-            {reviews.sort((a, b) => (b.createdAt?.seconds ?? 0) - (a.createdAt?.seconds ?? 0)).map((review) => (
-                <ReviewCard key={review.id} review={review} />
-            ))}
+        <div className='space-y-6'>
+            <div className="flex items-center gap-4 sm:gap-8 text-center bg-card/30 p-4 rounded-lg">
+                <div className="flex-1">
+                    <p className="text-sm text-muted-foreground">Total Reviews</p>
+                    <p className="text-2xl font-bold">{totalReviews}</p>
+                </div>
+                <div className="flex-1">
+                    <p className="text-sm text-muted-foreground">Average Rating</p>
+                    <div className="flex items-center justify-center gap-2">
+                        <p className="text-2xl font-bold">{averageRating.toFixed(1)}</p>
+                        <Star className="h-5 w-5 text-amber-400 fill-amber-400" />
+                    </div>
+                </div>
+            </div>
+            <div className="space-y-4">
+                {reviews.sort((a, b) => (b.createdAt?.seconds ?? 0) - (a.createdAt?.seconds ?? 0)).map((review) => (
+                    <ReviewCard key={review.id} review={review} />
+                ))}
+            </div>
         </div>
     );
 }

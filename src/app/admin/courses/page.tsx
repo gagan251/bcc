@@ -14,9 +14,9 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, BookOpen, PlusCircle, AlertTriangle, FileText, Home } from 'lucide-react';
+import { Loader2, BookOpen, PlusCircle, AlertTriangle, FileText } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
-import Link from 'next/link';
+import { AdminShell } from '@/components/admin/admin-shell';
 
 const courseFormSchema = z.object({
   name: z.string().min(3, { message: "Course name must be at least 3 characters." }),
@@ -50,7 +50,6 @@ function AddCourseForm() {
         form.reset();
       })
       .catch((serverError) => {
-        // This is for the Next.js error overlay in dev mode
         const permissionError = new FirestorePermissionError({
           path: coursesCollection.path,
           operation: 'create',
@@ -58,7 +57,6 @@ function AddCourseForm() {
         });
         errorEmitter.emit('permission-error', permissionError);
 
-        // This is for the user-facing toast
         toast({ variant: "destructive", title: "Submission Error", description: "Could not add the course." });
       })
       .finally(() => {
@@ -143,7 +141,7 @@ function CoursesList() {
                 {courses && courses.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {courses.map(course => (
-                            <div key={course.id} className="p-4 border rounded-lg">
+                            <div key={course.id} className="p-4 border rounded-lg bg-card/50">
                                 <h3 className="font-semibold">{course.name}</h3>
                                 <p className="text-sm text-muted-foreground line-clamp-2">{course.description}</p>
                             </div>
@@ -160,26 +158,17 @@ function CoursesList() {
 
 export default function AdminCoursesPage() {
   return (
-    <div className="min-h-screen bg-background p-4 sm:p-6 lg:p-8">
-        <header className="mb-8">
-            <div className="flex items-center justify-between">
-                <h1 className="text-3xl font-bold tracking-tight flex items-center gap-3">
-                    <BookOpen className="h-8 w-8 text-primary" />
-                    Course Management
-                </h1>
-                <Button asChild variant="outline">
-                    <Link href="/admin/dashboard"><Home className="mr-2 h-4 w-4" /> Back to Dashboard</Link>
-                </Button>
+    <div className="admin-dashboard-theme">
+        <AdminShell
+            pageTitle="Course Management"
+            pageDescription="Create, view, and manage courses available on the platform."
+            headerIcon={<BookOpen className="h-8 w-8 text-primary" />}
+        >
+            <div className="grid grid-cols-1 gap-8">
+                <AddCourseForm />
+                <CoursesList />
             </div>
-            <p className="mt-2 text-muted-foreground">
-                Create, view, and manage courses available on the platform.
-            </p>
-        </header>
-
-        <div className="grid grid-cols-1 gap-8">
-            <AddCourseForm />
-            <CoursesList />
-        </div>
+        </AdminShell>
     </div>
   );
 }

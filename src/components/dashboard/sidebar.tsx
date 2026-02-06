@@ -93,9 +93,9 @@ export function Sidebar() {
               asChild
               variant="ghost"
               className={cn(
-                "justify-start gap-3 px-3 py-6 text-sm h-auto transition-all duration-200",
+                "relative justify-start gap-3 px-3 py-6 text-sm h-auto transition-all duration-200",
                 isActive 
-                  ? "bg-primary/10 text-primary font-bold shadow-inner"
+                  ? "bg-primary/10 text-primary font-bold shadow-[inset_2px_0_0_hsl(var(--primary))]"
                   : "text-muted-foreground hover:bg-primary/5 hover:text-primary hover:translate-x-1"
               )}
             >
