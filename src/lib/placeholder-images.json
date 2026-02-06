@@ -7,10 +7,10 @@
       "imageHint": "typewriter desk"
     },
     {
-      "id": "glass-hero-image",
-      "description": "A whisk in a kitchen setting.",
-      "imageUrl": "https://i.postimg.cc/vmhdx9sF/Whisk-b82ba988c90d2be95e149845e5dc8388dr.jpg",
-      "imageHint": "kitchen whisk"
+      "id": "dark-mode-bg",
+      "description": "A modern laptop on a dark desk.",
+      "imageUrl": "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "imageHint": "dark laptop"
     },
     {
       "id": "why-choose-us-student",
