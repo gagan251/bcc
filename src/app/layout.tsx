@@ -5,7 +5,8 @@ import { Toaster } from '@/components/ui/toaster';
 import { cn } from '@/lib/utils';
 import { FirebaseClientProvider } from '@/firebase';
 import { ThemeProvider } from '@/components/theme-provider';
-import ClientLayoutWrapper from '@/components/client-layout-wrapper';
+import { Suspense } from 'react';
+import PageLoader from '@/components/ui/page-loader';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 
@@ -34,7 +35,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <FirebaseClientProvider>
-            <ClientLayoutWrapper>{children}</ClientLayoutWrapper>
+            <Suspense fallback={<PageLoader />}>{children}</Suspense>
           </FirebaseClientProvider>
           <Toaster />
         </ThemeProvider>
