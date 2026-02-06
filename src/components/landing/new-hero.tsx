@@ -8,7 +8,6 @@ export function NewHero() {
   
   return (
     <section id="home" className="hero-section hero-section-particles py-20 md:py-28 overflow-hidden">
-      <div className="hero-section-sun" />
       <div className="container mx-auto relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
           {/* Left Column: Text Content */}
