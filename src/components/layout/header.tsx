@@ -80,7 +80,7 @@ export function Header() {
     return email.charAt(0).toUpperCase();
   };
 
-  const useTransparentHeader = isHomePage && !isScrolled;
+  const useTransparentStyle = isHomePage && !isScrolled && theme === 'dark';
 
   const NavLinks = ({...props}) => (
     <>
@@ -90,7 +90,7 @@ export function Header() {
           href={link.href}
           className={cn(
             "text-sm font-medium transition-colors px-3 py-2 rounded-md",
-            useTransparentHeader ? "text-white/80 hover:text-white" : "text-muted-foreground hover:text-primary"
+            useTransparentStyle ? "text-white/80 hover:text-white" : "text-foreground hover:text-primary"
           )}
           {...props}
         >
@@ -104,13 +104,13 @@ export function Header() {
     <header
       className={cn(
         `sticky top-0 z-50 w-full transition-colors duration-200`,
-        useTransparentHeader ? "bg-transparent" : "bg-background/90 backdrop-blur-sm border-b"
+        useTransparentStyle ? "bg-transparent" : "bg-background/90 backdrop-blur-sm border-b shadow-sm"
       )}
     >
       <div className="container mx-auto flex h-16 max-w-screen-xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <Link href="/" className="flex items-center gap-2">
           <SiteLogo className="h-6 w-6" />
-          <span className={cn("font-bold", useTransparentHeader ? "text-white" : "text-foreground")}>Bharat Communication Center</span>
+          <span className={cn("font-bold", useTransparentStyle ? "text-white" : "text-foreground")}>Bharat Communication Center</span>
         </Link>
         <nav className="hidden items-center gap-1 md:flex">
           {isHomePage ? <NavLinks /> : null}
@@ -160,7 +160,7 @@ export function Header() {
                             variant="outline" 
                             size="sm"
                             className={cn(
-                                useTransparentHeader 
+                                useTransparentStyle 
                                 ? 'text-white border-white/20 hover:bg-white/10 hover:text-white' 
                                 : ''
                             )}
@@ -190,7 +190,7 @@ export function Header() {
                         <Button 
                             size="sm"
                             className={cn(
-                                useTransparentHeader 
+                                useTransparentStyle 
                                 ? 'bg-white/10 text-white hover:bg-white/20 border border-white/20' 
                                 : ''
                             )}
@@ -222,7 +222,7 @@ export function Header() {
             variant="ghost"
             size="icon"
             onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
-            className={cn("h-9 w-9", useTransparentHeader ? 'text-white hover:bg-white/10 hover:text-white' : '')}
+            className={cn("h-9 w-9", useTransparentStyle ? 'text-white hover:bg-white/10 hover:text-white' : '')}
           >
             <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
             <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
@@ -231,7 +231,7 @@ export function Header() {
           
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className={cn("h-9 w-9", useTransparentHeader ? 'text-white hover:bg-white/10 hover:text-white' : '')}>
+              <Button variant="ghost" size="icon" className={cn("h-9 w-9", useTransparentStyle ? 'text-white hover:bg-white/10 hover:text-white' : '')}>
                 <Bell className="h-4 w-4" />
                 <span className="sr-only">Notifications</span>
               </Button>
@@ -262,7 +262,7 @@ export function Header() {
 
           <Sheet>
             <SheetTrigger asChild>
-              <Button variant="outline" size="icon" className={cn("md:hidden h-9 w-9", useTransparentHeader ? 'bg-transparent border-white/20 text-white hover:bg-white/10 hover:text-white' : '')}>
+              <Button variant="outline" size="icon" className={cn("md:hidden h-9 w-9", useTransparentStyle ? 'bg-transparent border-white/20 text-white hover:bg-white/10 hover:text-white' : '')}>
                 <Menu className="h-4 w-4" />
                 <span className="sr-only">Open menu</span>
               </Button>
