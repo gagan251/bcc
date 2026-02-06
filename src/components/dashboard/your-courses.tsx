@@ -5,7 +5,7 @@ import { collection, doc } from 'firebase/firestore';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import { BookOpen } from 'lucide-react';
+import { BookOpen, GraduationCap } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 
 function CourseCard({ courseId }: { courseId: string }) {
@@ -69,7 +69,7 @@ export function YourCourses() {
   if (isLoading) {
     return (
         <div>
-            <h2 className="text-3xl font-bold tracking-tight mb-6">Your Courses</h2>
+            <h2 className="text-2xl font-bold tracking-tight mb-6">Your Courses</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {[...Array(3)].map((_, i) => (
                     <Card key={i}>
@@ -91,8 +91,8 @@ export function YourCourses() {
   }
 
   return (
-    <div>
-      <h2 className="text-3xl font-bold tracking-tight mb-6">Your Courses</h2>
+    <section>
+      <h2 className="text-2xl font-bold tracking-tight mb-6">Your Courses</h2>
       {enrollments && enrollments.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {enrollments.map((enrollment) => (
@@ -100,19 +100,19 @@ export function YourCourses() {
           ))}
         </div>
       ) : (
-        <Card className="text-center p-8 bg-card/80 border-dashed">
+        <Card className="text-center p-8 bg-card/80 border-dashed border-border/50">
             <CardContent className="flex flex-col items-center">
-                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 mb-4">
-                    <BookOpen className="h-8 w-8 text-primary" />
+                <div className="flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-primary/10 to-primary/20 mb-6 relative animate-float">
+                    <GraduationCap className="h-10 w-10 text-primary" />
                 </div>
-                <h3 className="text-xl font-semibold">No Courses Yet</h3>
-                <p className="text-muted-foreground mt-2 mb-6 max-w-sm mx-auto">It looks like you haven't enrolled in any courses. Explore our offerings to get started!</p>
-                <Button asChild>
+                <h3 className="text-xl font-semibold text-foreground">You haven’t enrolled yet</h3>
+                <p className="text-muted-foreground mt-2 mb-6 max-w-sm mx-auto">Let’s get started on your learning path 🚀</p>
+                <Button asChild size="lg" className="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground shadow-lg transition-all duration-300 hover:shadow-primary/40 hover:-translate-y-0.5 active:scale-95">
                     <Link href="/#courses">Explore Courses</Link>
                 </Button>
             </CardContent>
         </Card>
       )}
-    </div>
+    </section>
   );
 }
