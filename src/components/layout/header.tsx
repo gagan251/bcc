@@ -1,4 +1,3 @@
-
 'use client';
 
 import Link from 'next/link';
@@ -73,7 +72,7 @@ export function Header() {
     return email.charAt(0).toUpperCase();
   };
 
-  const useTransparentHeader = isHomePage && !isScrolled;
+  const useTransparentHeader = isHomePage && !isScrolled && theme === 'dark';
 
   const NavLinks = ({...props}) => (
     <>
@@ -83,7 +82,7 @@ export function Header() {
           href={link.href}
           className={cn(
             "text-sm font-medium transition-colors px-3 py-2 rounded-md",
-            useTransparentHeader ? "text-white/80 hover:text-white" : "text-muted-foreground hover:text-foreground"
+            useTransparentHeader ? "text-white/80 hover:text-white" : "text-muted-foreground hover:text-primary"
           )}
           {...props}
         >
@@ -97,7 +96,7 @@ export function Header() {
     <header
       className={cn(
         `sticky top-0 z-50 w-full transition-colors duration-200`,
-        useTransparentHeader ? "bg-transparent" : "bg-background/80 backdrop-blur-sm border-b"
+        useTransparentHeader ? "bg-transparent" : "bg-background/90 backdrop-blur-sm border-b"
       )}
     >
       <div className="container mx-auto flex h-16 max-w-screen-xl items-center justify-between px-4 sm:px-6 lg:px-8">
