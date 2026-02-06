@@ -171,6 +171,21 @@
   background: linear-gradient(180deg, #87CEEB 0%, #f0f9ff 100%);
 }
 
+.hero-section::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url('https://images.unsplash.com/photo-1496181133206-80ce9b88a853?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+  background-position: center;
+  background-size: cover;
+  opacity: 0.18;
+  filter: blur(3px);
+  z-index: 0;
+}
+
 .hero-section-sun {
   display: block;
   position: absolute;
@@ -196,6 +211,10 @@
       #090940 35%,
       #091559 100%
     );
+}
+
+.dark .hero-section::after {
+  display: none;
 }
 
 .dark .hero-section-sun {
