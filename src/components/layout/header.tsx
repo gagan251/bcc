@@ -7,7 +7,15 @@ import {
   SheetContent,
   SheetTrigger,
 } from '@/components/ui/sheet';
-import { Bell, Menu, LogOut, LayoutDashboard, Moon, Sun } from 'lucide-react';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import { Bell, Menu, LogOut, LayoutDashboard, Moon, Sun, User, Shield } from 'lucide-react';
 import { useUser, useAuth } from '@/firebase';
 import { signOut } from 'firebase/auth';
 import { useRouter, usePathname } from 'next/navigation';
@@ -72,7 +80,7 @@ export function Header() {
     return email.charAt(0).toUpperCase();
   };
 
-  const useTransparentHeader = isHomePage && !isScrolled && theme === 'dark';
+  const useTransparentHeader = isHomePage && !isScrolled;
 
   const NavLinks = ({...props}) => (
     <>
@@ -146,29 +154,67 @@ export function Header() {
             </DropdownMenu>
           ) : (
             <div className="hidden items-center gap-2 md:flex">
-                <Button 
-                    variant="outline" 
-                    size="sm" 
-                    asChild 
-                    className={cn(
-                        useTransparentHeader 
-                        ? 'text-white border-white/20 hover:bg-white/10 hover:text-white' 
-                        : ''
-                    )}
-                >
-                    <Link href="/login">Login</Link>
-                </Button>
-                <Button 
-                    size="sm" 
-                    asChild 
-                    className={cn(
-                        useTransparentHeader 
-                        ? 'bg-white/10 text-white hover:bg-white/20 border border-white/20' 
-                        : ''
-                    )}
-                >
-                    <Link href="/signup">Sign Up</Link>
-                </Button>
+                <Dialog>
+                    <DialogTrigger asChild>
+                        <Button 
+                            variant="outline" 
+                            size="sm"
+                            className={cn(
+                                useTransparentHeader 
+                                ? 'text-white border-white/20 hover:bg-white/10 hover:text-white' 
+                                : ''
+                            )}
+                        >
+                            Login
+                        </Button>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-[425px]">
+                        <DialogHeader>
+                            <DialogTitle>Login As</DialogTitle>
+                            <DialogDescription>
+                                Choose your role to proceed to the login page.
+                            </DialogDescription>
+                        </DialogHeader>
+                        <div className="grid grid-cols-2 gap-4 py-4">
+                            <Button variant="outline" asChild>
+                                <Link href="/login"><User className="mr-2 h-4 w-4"/> Student</Link>
+                            </Button>
+                            <Button variant="outline" asChild>
+                                <Link href="/admin/login"><Shield className="mr-2 h-4 w-4"/> Admin</Link>
+                            </Button>
+                        </div>
+                    </DialogContent>
+                </Dialog>
+                <Dialog>
+                    <DialogTrigger asChild>
+                        <Button 
+                            size="sm"
+                            className={cn(
+                                useTransparentHeader 
+                                ? 'bg-white/10 text-white hover:bg-white/20 border border-white/20' 
+                                : ''
+                            )}
+                        >
+                            Sign Up
+                        </Button>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-[425px]">
+                        <DialogHeader>
+                            <DialogTitle>Sign Up As</DialogTitle>
+                            <DialogDescription>
+                                Choose your role to proceed to the sign-up page.
+                            </DialogDescription>
+                        </DialogHeader>
+                        <div className="grid grid-cols-2 gap-4 py-4">
+                            <Button variant="outline" asChild>
+                                <Link href="/signup"><User className="mr-2 h-4 w-4"/> Student</Link>
+                            </Button>
+                            <Button variant="outline" asChild>
+                                <Link href="/admin/signup"><Shield className="mr-2 h-4 w-4"/> Admin</Link>
+                            </Button>
+                        </div>
+                    </DialogContent>
+                </Dialog>
             </div>
           )}
 
@@ -242,25 +288,50 @@ export function Header() {
                     </>
                   ) : (
                     <>
-                      <Button asChild className='w-full'>
-                        <Link href="/signup">Sign Up</Link>
-                      </Button>
-                      <Button variant="outline" asChild className='w-full'>
-                        <Link href="/login">Login</Link>
-                      </Button>
+                      <Dialog>
+                        <DialogTrigger asChild>
+                          <Button className='w-full'>Sign Up</Button>
+                        </DialogTrigger>
+                        <DialogContent className="sm:max-w-[425px]">
+                          <DialogHeader>
+                            <DialogTitle>Sign Up As</DialogTitle>
+                            <DialogDescription>
+                                Choose your role to proceed to the sign-up page.
+                            </DialogDescription>
+                          </DialogHeader>
+                          <div className="grid grid-cols-2 gap-4 py-4">
+                            <Button variant="outline" asChild>
+                              <Link href="/signup"><User className="mr-2 h-4 w-4"/> Student</Link>
+                            </Button>
+                            <Button variant="outline" asChild>
+                              <Link href="/admin/signup"><Shield className="mr-2 h-4 w-4"/> Admin</Link>
+                            </Button>
+                          </div>
+                        </DialogContent>
+                      </Dialog>
+                      <Dialog>
+                        <DialogTrigger asChild>
+                          <Button variant="outline" className='w-full'>Login</Button>
+                        </DialogTrigger>
+                        <DialogContent className="sm:max-w-[425px]">
+                          <DialogHeader>
+                            <DialogTitle>Login As</DialogTitle>
+                            <DialogDescription>
+                                Choose your role to proceed to the login page.
+                            </DialogDescription>
+                          </DialogHeader>
+                          <div className="grid grid-cols-2 gap-4 py-4">
+                            <Button variant="outline" asChild>
+                              <Link href="/login"><User className="mr-2 h-4 w-4"/> Student</Link>
+                            </Button>
+                            <Button variant="outline" asChild>
+                              <Link href="/admin/login"><Shield className="mr-2 h-4 w-4"/> Admin</Link>
+                            </Button>
+                          </div>
+                        </DialogContent>
+                      </Dialog>
                     </>
                   )}
-                   <div className="relative py-2">
-                      <div className="absolute inset-0 flex items-center">
-                          <span className="w-full border-t"></span>
-                      </div>
-                      <div className="relative flex justify-center text-xs uppercase">
-                          <span className="bg-card px-2 text-muted-foreground">Or</span>
-                      </div>
-                  </div>
-                   <Button variant="ghost" asChild className='w-full'>
-                    <Link href="/admin/login">Admin Login</Link>
-                  </Button>
                 </div>
               </div>
             </SheetContent>
