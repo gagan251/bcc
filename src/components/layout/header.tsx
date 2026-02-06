@@ -16,7 +16,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { Bell, Menu, LogOut, LayoutDashboard, Moon, Sun, User, Shield } from 'lucide-react';
-import { useUser, useAuth } from '@/firebase';
+import { useUser, useAuth, useFirestore } from '@/firebase';
 import { signOut } from 'firebase/auth';
 import { useRouter, usePathname } from 'next/navigation';
 import {
@@ -32,6 +32,7 @@ import { SiteLogo } from '../site-logo';
 import { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import { useTheme } from 'next-themes';
+import { doc, getDoc } from 'firebase/firestore';
 
 const navLinks = [
   { href: '#home', label: 'Home' },
@@ -44,9 +45,11 @@ const navLinks = [
 export function Header() {
   const { user, isUserLoading } = useUser();
   const auth = useAuth();
+  const firestore = useFirestore();
   const router = useRouter();
   const pathname = usePathname();
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const { setTheme, theme } = useTheme();
 
   const isHomePage = pathname === '/';
@@ -64,6 +67,30 @@ export function Header() {
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
+
+  useEffect(() => {
+    const checkAdminRole = async () => {
+      if (user && firestore) {
+        const userDocRef = doc(firestore, 'users', user.uid);
+        try {
+          const userDoc = await getDoc(userDocRef);
+          if (userDoc.exists() && userDoc.data().role === 'admin') {
+            setIsAdmin(true);
+          } else {
+            setIsAdmin(false);
+          }
+        } catch (error) {
+          console.error("Error checking admin role:", error);
+          setIsAdmin(false);
+        }
+      } else {
+        setIsAdmin(false);
+      }
+    };
+    if (!isUserLoading) {
+      checkAdminRole();
+    }
+  }, [user, isUserLoading, firestore]);
 
 
   const handleSignOut = async () => {
@@ -181,7 +208,7 @@ export function Header() {
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
-                  <Link href="/dashboard"><LayoutDashboard className="mr-2"/>Dashboard</Link>
+                  <Link href={isAdmin ? "/admin/dashboard" : "/dashboard"}><LayoutDashboard className="mr-2"/>Dashboard</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}>
                   {theme === 'light' ? <Moon className="mr-2"/> : <Sun className="mr-2"/>}
@@ -281,7 +308,7 @@ export function Header() {
                   {user ? (
                     <>
                       <Button asChild className="w-full">
-                        <Link href="/dashboard">Dashboard</Link>
+                        <Link href={isAdmin ? "/admin/dashboard" : "/dashboard"}>Dashboard</Link>
                       </Button>
                       <Button variant="outline" onClick={handleSignOut} className="w-full">
                         Sign Out
