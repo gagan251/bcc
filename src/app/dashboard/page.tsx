@@ -4,7 +4,6 @@ import { useUser } from '@/firebase';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { YourCourses } from '@/components/dashboard/your-courses';
 import { QuickActions } from '@/components/dashboard/quick-actions';
-import { Sparkles } from 'lucide-react';
 
 export default function StudentDashboardPage() {
   const { user } = useUser();
@@ -22,10 +21,6 @@ export default function StudentDashboardPage() {
                 <div className="space-y-2">
                     <h1 className="text-2xl font-bold tracking-tight text-foreground md:text-3xl">
                     Welcome back, {user?.displayName ?? 'Student'}!
-                    <span className="relative ml-2 inline-block">
-                        <Sparkles className="absolute -right-2 -top-4 h-5 w-5 animate-pulse text-yellow-400 duration-2000" />
-                        <Sparkles className="absolute -left-2 -bottom-3 h-3 w-3 animate-pulse text-yellow-400 delay-500 duration-2000" />
-                    </span>
                     </h1>
                     <p className="text-muted-foreground">
                     Let’s continue your learning journey today ✨
