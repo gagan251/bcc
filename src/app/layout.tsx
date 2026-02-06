@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
-import NextTopLoader from 'nextjs-toploader';
 import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 import { cn } from '@/lib/utils';
@@ -27,17 +26,6 @@ export default function RootLayout({
           inter.variable
         )}
       >
-        <NextTopLoader
-          color="hsl(var(--primary))"
-          initialPosition={0.08}
-          crawlSpeed={200}
-          height={3}
-          crawl={true}
-          showSpinner={false}
-          easing="ease"
-          speed={200}
-          shadow="0 0 10px hsl(var(--primary)),0 0 5px hsl(var(--primary))"
-        />
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
