@@ -17,16 +17,14 @@ export default function Home() {
         <EnrollmentFlow />
 
         <div className="bg-background">
-          <div className="relative mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-1 lg:grid-cols-12 lg:gap-8">
-              <div className="lg:col-span-8">
-                <div className="space-y-24 py-16 md:py-24">
-                  <Courses />
-                  <WhyChooseUs />
-                  <AddReview />
-                </div>
+          <div className="relative mx-auto max-w-screen-xl px-4 py-16 sm:px-6 lg:px-8">
+            <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-12">
+              <div className="space-y-24 lg:col-span-8">
+                <Courses />
+                <WhyChooseUs />
+                <AddReview />
               </div>
-              <aside className="hidden lg:col-span-4 lg:block">
+              <aside className="lg:col-span-4">
                 <div className="sticky top-28 space-y-6">
                   <LoginCard />
                 </div>
